@@ -22,9 +22,8 @@ public interface CanBus {
 	public void listen();
 	public CanBusMessage dequeue();
 	public void setLogisticsType(CanBus.LogisticsType logisticsType);
-	public void setQueueLength(int qLength);
-	public int getQueueLength();
 	public void setListenFilter(int iFilter);
+	public int getQueueLength();
 	public int getListenFilter();
 	public void clearListenFilter();
 	

@@ -4,13 +4,17 @@
 package org.waal70.canbus;
 
 import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.waal70.canbus.util.net.ProbeInterface;
 
 /**
  * @author awaal
- *
+ * This is the main class
  */
 public class VolvoCANBUS {
 	private static Logger log = Logger.getLogger(VolvoCANBUS.class);
@@ -23,11 +27,20 @@ public class VolvoCANBUS {
 	public static void main(String[] args) throws Exception {
 		initLog4J();
 		log.info("Program start.");
-		S60CanBus scb = new S60CanBus(new CanMessageQueue());
-		scb.setQueueLength(255);
-		scb.connect();
-		log.info(scb.dequeue().messageAsCommand());
-		scb.close();
+		//Instantiate two bus-readers. Just for the heck of it :)
+		
+		ExecutorService es = Executors.newCachedThreadPool();
+		es.execute(new S60CanBusReader("Reader een"));
+		es.execute(new S60CanBusReader("Reader twee"));
+		
+		es.awaitTermination(1000, TimeUnit.MILLISECONDS);
+	
+		log.info(CanMessageQueue.getInstance().poll().messageAsCommand());
+		if (!ProbeInterface.findInterface("can0"))
+			log.error("No CAN interface found!");
+			
+			
+		//pi.listInterfaces();
 		
 	 	 
 		 //cm.setCanId("12312312");
