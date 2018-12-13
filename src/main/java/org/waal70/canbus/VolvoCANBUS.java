@@ -33,7 +33,11 @@ public class VolvoCANBUS {
 		es.execute(new S60CanBusReader("Reader een"));
 		es.execute(new S60CanBusReader("Reader twee"));
 		
+		TimeUnit.SECONDS.sleep(10);
+		es.shutdownNow();
 		es.awaitTermination(1000, TimeUnit.MILLISECONDS);
+		
+	
 	
 		log.info(CanMessageQueue.getInstance().poll().messageAsCommand());
 		if (!ProbeInterface.findInterface("can0"))
@@ -52,6 +56,7 @@ public class VolvoCANBUS {
 		 //
 		 // messages arrive as (HEX encoded):
 		 //  can0  12312312   [8]  11 22 33 44 55 66 77 88
+		log.info("Reached end of main-thread.");
 
 
 	}
