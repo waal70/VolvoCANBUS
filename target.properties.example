@@ -1,0 +1,6 @@
+pi.host=<your hostname or IP here>
+pi.port=<portnumber here>
+pi.user=<username to connect>
+pi.password=<password>
+pi.deployDirectory=<full path to location for the files>
+<!-- <pi.main.class>com.company.test.ControlGpioExample</pi.main.class> -->

@@ -7,7 +7,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>VolvoCANBUS</name>
 	<description>Doing Volvo p2 canbus stuff</description>
-
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -24,54 +23,116 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Create a target.properties file in your project root that contains 
+			the appropriate properties (pi.user, pi.password) -->
+		<propertiesFile>target.properties</propertiesFile>
 	</properties>
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<configuration>
-						<archive>
-							<manifest>
-								<mainClass>org.waal70.canbus.VolvoCANBUS</mainClass>
-							</manifest>
-						</archive>
-						<descriptorRefs>
-							<descriptorRef>jar-with-dependencies</descriptorRef>
-						</descriptorRefs>
-					</configuration>
-					<executions>
-						<execution>
-							<id>make-assembly</id> <!-- this is used for inheritance merges -->
-							<phase>package</phase> <!-- bind to the packaging phase -->
-							<goals>
-								<goal>single</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.19.1</version> <!-- Specific due to memory leak in 2.20 -->
-					<dependencies>
-						<!--Custom provider and engine for Junit 5 to surefire -->
-						<dependency>
-							<groupId>org.junit.platform</groupId>
-							<artifactId>junit-platform-surefire-provider</artifactId>
-							<version>1.0.1</version>
-						</dependency>
-						<dependency>
-							<groupId>org.junit.jupiter</groupId>
-							<artifactId>junit-jupiter-engine</artifactId>
-							<version>5.0.1</version>
-						</dependency>
-					</dependencies>
-					<configuration>
-						<argLine>${argLine}</argLine>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+		<finalName>${project.artifactId}-${project.version}</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.1.1</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>org.waal70.canbus.VolvoCANBUS</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>package</phase> <!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19.1</version> <!-- Specific due to memory leak in 2.20 -->
+				<dependencies>
+					<!--Custom provider and engine for Junit 5 to surefire -->
+					<dependency>
+						<groupId>org.junit.platform</groupId>
+						<artifactId>junit-platform-surefire-provider</artifactId>
+						<version>1.0.1</version>
+					</dependency>
+					<dependency>
+						<groupId>org.junit.jupiter</groupId>
+						<artifactId>junit-jupiter-engine</artifactId>
+						<version>5.0.1</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<argLine>${argLine}</argLine>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<!-- ensure the target directory exists on the Raspberry Pi -->
+								<sshexec host="${pi.host}" port="${pi.port}"
+									username="${pi.user}" password="${pi.password}" trust="true"
+									failonerror="false" verbose="true"
+									command="mkdir --parents ${pi.deployDirectory}" />
+
+								<!-- copy the JAR file to the Raspberry Pi -->
+								<scp
+									file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar"
+									todir="${pi.user}:${pi.password}@${pi.host}:${pi.deployDirectory}"
+									port="${pi.port}" trust="true" verbose="true"
+									failonerror="true">
+								</scp>
+
+								<!-- run the JAR file on the Raspberry Pi <sshexec host="${pi.host}" 
+									port="${pi.port}" username="${pi.user}" password="${pi.password}" trust="true" 
+									failonerror="false" verbose="true" command="java -jar ${pi.deployDirectory}/${project.build.finalName}-jar-with-dependencies.jar"/> -->
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-jsch</artifactId>
+						<version>1.9.6</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>read-project-properties</goal>
+						</goals>
+						<configuration>
+							<files>
+								<file>${basedir}/${propertiesFile}</file>
+							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 </project>
