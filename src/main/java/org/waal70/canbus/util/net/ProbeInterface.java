@@ -44,7 +44,7 @@ public class ProbeInterface {
 		}
 	}
 	
-	public void listInterfaces() {
+	public static void listInterfaces() {
         Enumeration<NetworkInterface> nets = null;
 		try {
 			nets = NetworkInterface.getNetworkInterfaces();

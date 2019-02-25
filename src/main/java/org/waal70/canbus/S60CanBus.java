@@ -26,7 +26,8 @@ public class S60CanBus implements CanBus{
 	private static final boolean FAKE_IT = true;
 	private boolean _ISLISTENING = false;
 	private CanMessageQueue _cmq;
-	private ProcessBuilder _pb = new ProcessBuilder("/Users/awaal/cansend");
+	private ProcessBuilder _pb = new ProcessBuilder("/home/awaal/cansend");
+	//private ProcessBuilder _pb = new ProcessBuilder("/home/awaal/cansend","can0");
 	private Process _p;
 	private BufferedReader _br; 
 	//should implement "connect" or "open"
@@ -35,13 +36,14 @@ public class S60CanBus implements CanBus{
 	// listen (creating an array of received messages, maxing out at 255?)
 	public boolean connect() {
 		log.debug("connecting to bus...");
+		log.debug("PB: " + _pb.toString());
 		if (FAKE_IT)
 		{
 			try {
 				_p = _pb.start();
 				_br = new BufferedReader(new InputStreamReader(_p.getInputStream()));
 			} catch (IOException e) {
-				log.error("Kan process niet starten");
+				log.error("Kan process niet starten: " + e.getLocalizedMessage());
 			}
 			return true;
 		}

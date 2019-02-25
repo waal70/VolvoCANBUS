@@ -9,8 +9,8 @@ import org.apache.log4j.Logger;
  * @author awaal
  *
  */
-public final class CanId implements Cloneable {
-	private static Logger log = Logger.getLogger(CanId.class);
+public final class CanId2 implements Cloneable {
+	private static Logger log = Logger.getLogger(CanId2.class);
 	private int _canId = 0;
 	private boolean _isEFF = true; 
 	/**
@@ -38,7 +38,7 @@ public final class CanId implements Cloneable {
 	 * By default it is assuming Extended Can-id. Please call setEFF(false) to
 	 * explicitly use the standard can-id
 	 */
-	public CanId(int address) {
+	public CanId2(int address) {
 		//If I get passed an int, I will first need
 		// to go back into hex format
 		//log.info("Interpreting the following address as int: "+ address);
@@ -53,7 +53,7 @@ public final class CanId implements Cloneable {
 		_canId = address;
 		//log.debug("int address: " +address);
 	}
-	public CanId(String address) {
+	public CanId2(String address) {
 		// So if I get passed a string, I am going to assume it is a HEX-string
 		//log.info("Interpreting the following address as HEX string: " + address);
 		String sAddress = address;
@@ -113,7 +113,7 @@ public final class CanId implements Cloneable {
 
 	@Override
 	protected Object clone() {
-		return new CanId(_canId);
+		return new CanId2(_canId);
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public final class CanId implements Cloneable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CanId other = (CanId) obj;
+		CanId2 other = (CanId2) obj;
 		if (_canId != other._canId)
 			return false;
 		return true;

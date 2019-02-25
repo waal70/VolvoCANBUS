@@ -16,7 +16,7 @@ public class CanMessage extends CanBusMessage {
 	private String _interfaceName;
 	@SuppressWarnings("unused")
 	private int _numBytes = 0;
-	private CanId _canId = null;
+	private CanId2 _canId = null;
 	private String _canData = ""; //HEX string, always 8 bytes long, or 16 characters
 	//send format is ./cansend can0 12312312#ABCDEF4455667788
 	
@@ -73,13 +73,13 @@ public class CanMessage extends CanBusMessage {
 	/**
 	 * @return the _canId
 	 */
-	public CanId getCanId() {
+	public CanId2 getCanId() {
 		return _canId;
 	}
 	/**
 	 * @param _canId the _canId to set
 	 */
-	public void setCanId(CanId _canId) {
+	public void setCanId(CanId2 _canId) {
 		this._canId = _canId;
 	}
 	/**
@@ -112,7 +112,7 @@ public class CanMessage extends CanBusMessage {
 	}
 	
 	public void setCanMessage(String strCanId, String _canData) {
-		_canId = new CanId(Integer.parseInt(strCanId));
+		_canId = new CanId2(Integer.parseInt(strCanId));
 		if (strCanId.length() <= 3) 
 			_canId.setEFF(false);
 				
@@ -162,7 +162,7 @@ public class CanMessage extends CanBusMessage {
 		this._interfaceName = result[0];
 		//log.debug("interfaceName = " + _interfaceName);
 		//Second element is canid
-		this._canId = new CanId(result[1]);
+		this._canId = new CanId2(result[1]);
 		//log.debug("canID: " + _canId.getCanId_EFFHex());
 		//Third element is datalength
 		this._numBytes = Integer.parseInt(result[2].substring(1,2));

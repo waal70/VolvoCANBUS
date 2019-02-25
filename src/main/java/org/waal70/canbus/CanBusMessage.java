@@ -16,7 +16,7 @@ public abstract class CanBusMessage {
 	public int flags;
 	
 		
-	public abstract CanId getCanId();
+	public abstract CanId2 getCanId();
 	public abstract String getHexCanId();
 	
 	public abstract String getMessage();
