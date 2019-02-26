@@ -19,18 +19,26 @@ import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 public final class CanSocket implements Closeable {
+	private static Logger log = Logger.getLogger(CanSocket.class);
     static {
-        final String LIB_JNI_SOCKETCAN = "jni_socketcan";
+    	log.debug("Trying to load native library");
+    	final String LIB_JNI_SOCKETCAN = "jni_socketcan";
         try {
+        	log.debug("Try loadLibrary");
              System.loadLibrary(LIB_JNI_SOCKETCAN);
         } catch (final UnsatisfiedLinkError e) {
             try {
+            	log.debug("Try load from JAR");
                 loadLibFromJar(LIB_JNI_SOCKETCAN);
             } catch (final IOException _e) {
+            	log.error("Cannot load native library");
                 throw new UnsatisfiedLinkError(LIB_JNI_SOCKETCAN);
             }
         }
+        log.debug("Succesfully loaded native library");
     }
 
     private static void copyStream(final InputStream in,
@@ -46,6 +54,7 @@ public final class CanSocket implements Closeable {
             throws IOException {
         Objects.requireNonNull(libName);
         final String fileName = "/lib/lib" + libName + ".so";
+        log.debug("Load from JAR: " + fileName);
         final FileAttribute<Set<PosixFilePermission>> permissions =
                 PosixFilePermissions.asFileAttribute(
                         PosixFilePermissions.fromString("rw-------"));
@@ -371,20 +380,31 @@ public final class CanSocket implements Closeable {
         RAW, BCM
     }
     
-    private final int _fd;
+    private int _fd;
     private final Mode _mode;
     private CanInterface _boundTo;
     
-    public CanSocket(Mode mode) throws IOException {
+    public CanSocket(Mode mode) { //throws IOException {
         switch (mode) {
         case BCM:
-            _fd = _openSocketBCM();
+            try {
+				_fd = _openSocketBCM();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             break;
         case RAW:
-            _fd = _openSocketRAW();
+            try {
+				_fd = _openSocketRAW();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             break;
         default:
-            throw new IllegalStateException("unkown mode " + mode);
+        	break;
+            //throw new IllegalStateException("unkown mode " + mode);
         }
         this._mode = mode;
     }

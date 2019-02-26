@@ -38,7 +38,7 @@ public class S60CanBusReader implements Runnable {
 	public void run() {
 		log.debug("run() called for thread " + _threadName);
 		_scb.connect();
-		_scb.listen();
+		_scb.listenReal();
 	}
 
 }

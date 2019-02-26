@@ -4,6 +4,7 @@
 package org.waal70.canbus;
 
 import org.apache.log4j.Logger;
+import org.waal70.canbus.CanSocket.CanFrame;
 
 /**
  * @author awaal
@@ -61,6 +62,7 @@ public class CanMessage extends CanBusMessage {
 	    return data;
 	}
 	private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
+	
 	public static String bytesToHex(byte[] bytes) {
 	    char[] hexChars = new char[bytes.length * 2];
 	    for ( int j = 0; j < bytes.length; j++ ) {
@@ -128,6 +130,17 @@ public class CanMessage extends CanBusMessage {
 	@Override
 	public String getMessage() {
 		return this._canData;
+	}
+	
+	public boolean parseReal(CanFrame _cf)
+	{
+		byte[] data = _cf.getData();
+		log.info("isSetEFFSFF yields: " +_cf.getCanId().isSetEFFSFF());
+		log.info("CanId SFF: "+ _cf.getCanId().getCanId_SFF());
+		log.info("CanId EFF: "+ _cf.getCanId().getCanId_EFF());
+		this._canData = bytesToHex(data);
+		log.info("data is: " + bytesToHex(data));
+		return true;
 	}
 	
 	public boolean parseMessage(String wholeMessage)

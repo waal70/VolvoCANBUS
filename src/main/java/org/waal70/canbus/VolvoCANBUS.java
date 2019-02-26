@@ -36,21 +36,13 @@ public class VolvoCANBUS {
 		ExecutorService es = Executors.newCachedThreadPool();
 		es.execute(new S60CanBusReader("Reader een"));
 		es.execute(new S60CanBusReader("Reader twee"));
-		
-
-		TimeUnit.SECONDS.sleep(5);
-	      try (final CanSocket socket = new CanSocket(Mode.RAW)) {
-	            final CanInterface canif = new CanInterface(socket, "can0");
-	            socket.bind(canif);
-	            socket.setLoopbackMode(true);
-	            socket.send(new CanFrame(canif,
-	                    new CanId(0x5), new byte[] {0,0,0,0,0,0,0,0}));
-	      }
-	      catch (Exception e)
-	      {
-	    	  log.error("Oops");
-	      }
-		
+		canBusWrite();
+		 canBusWrite();
+		 canBusWrite();
+		 canBusWrite();
+		//TimeUnit.SECONDS.sleep(5);
+	    canBusWrite();
+			
 		es.shutdownNow();
 		es.awaitTermination(1000, TimeUnit.MILLISECONDS);
 
@@ -58,7 +50,7 @@ public class VolvoCANBUS {
 
 	
 	
-		log.info(CanMessageQueue.getInstance().poll().messageAsCommand());
+		//log.info(CanMessageQueue.getInstance().poll().messageAsCommand());
 		if (!ProbeInterface.findInterface("can0"))
 			log.error("No CAN interface found!");
 		//ProbeInterface.listInterfaces();
@@ -80,6 +72,22 @@ public class VolvoCANBUS {
 		log.info("Reached end of main-thread.");
 
 
+	}
+	private static void canBusWrite()
+	{
+		try (final CanSocket socket = new CanSocket(Mode.RAW)) {
+            final CanInterface canif = new CanInterface(socket, "can0");
+            socket.bind(canif);
+            socket.setLoopbackMode(true);
+            CanId ci = new CanId(12312312);
+            ci.setEFFSFF();
+            socket.send(new CanFrame(canif,
+                    ci, new byte[] {0,0,0,0,0,0,0,0}));
+      }
+      catch (Exception e)
+      {
+    	  log.error("Oops");
+      }
 	}
 	private static void initLog4J()
 	{

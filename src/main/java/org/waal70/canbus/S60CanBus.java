@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
+import org.waal70.canbus.CanSocket.CanFrame;
+import org.waal70.canbus.CanSocket.CanInterface;
+import org.waal70.canbus.CanSocket.Mode;
 
 /**
  * @author awaal
@@ -18,24 +21,52 @@ import org.apache.log4j.Logger;
  * can0 12312314 [8] 33 44 55 66 77 88 99 AA
  * They will be parsed and put onto the CanMessageQueue
  */
-public class S60CanBus implements CanBus{
+public class S60CanBus implements CanBus {
 	/**
 	 * @param _cmq
 	 */
 	private static Logger log = Logger.getLogger(S60CanBus.class);
-	private static final boolean FAKE_IT = true;
+	private static final boolean FAKE_IT = false;
+	private static final String CAN_INTERFACE = "can0";
 	private boolean _ISLISTENING = false;
+	private CanSocket mySocket = new CanSocket(Mode.RAW);
 	private CanMessageQueue _cmq;
 	private ProcessBuilder _pb = new ProcessBuilder("/home/awaal/cansend");
 	//private ProcessBuilder _pb = new ProcessBuilder("/home/awaal/cansend","can0");
 	private Process _p;
 	private BufferedReader _br; 
+	
+	//private CanSocket _socket;
+	private CanInterface _canif;
 	//should implement "connect" or "open"
 	// send (message)
 	// listenFilter (to a can-id)
 	// listen (creating an array of received messages, maxing out at 255?)
 	public boolean connect() {
-		log.debug("connecting to bus...");
+		if (FAKE_IT)
+		{
+			return connectFake();
+		}
+		else
+			return connectReal();
+	}
+
+		
+	private boolean connectReal()
+	{
+		log.debug("Connecting to bus...(REAL)");
+		  try {
+	            _canif = new CanInterface(mySocket, CAN_INTERFACE);
+	            mySocket.bind(_canif);
+		  } catch (IOException e) {
+			  log.error("IOException when opening socket. " + e.getLocalizedMessage());
+			return false;
+		}
+		return true;
+	}
+	private boolean connectFake()
+	{
+		log.debug("Connecting to bus...(FAKING)");
 		log.debug("PB: " + _pb.toString());
 		if (FAKE_IT)
 		{
@@ -93,6 +124,27 @@ public class S60CanBus implements CanBus{
 			log.error("Fout");
 		}
 
+
+	}
+	public void listenReal() {
+		_ISLISTENING=true;
+		
+		try {
+			for (CanFrame cf = mySocket.recv(); cf !=null; cf = mySocket.recv())
+			{
+				CanMessage cm = new CanMessage();
+				if (cm.parseReal(cf))
+				{
+					_cmq.add(cm);
+				}
+				log.debug("Received message" + cf.toString());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			log.error("IOException thrown");
+			e.printStackTrace();
+		}
+		
 	}
 	public void setLogisticsType(LogisticsType logisticsType) {
 		// TODO Auto-generated method stub
