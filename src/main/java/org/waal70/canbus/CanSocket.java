@@ -190,17 +190,60 @@ public final class CanSocket implements Closeable {
             return this;
         }
         
-        public int getCanId_SFF() {
+ /*        public int getCanId_SFF() {
             return _getCANID_SFF(_canId);
         }
         
         public int getCanId_EFF() {
             return _getCANID_EFF(_canId);
-        }
+        } */
         
         public int getCanId_ERR() {
             return _getCANID_ERR(_canId);
         }
+        
+        //Andre added:
+        public String getCanId_SFFHex() {
+    		//return the "small" can-id:
+    		//Do not touch the member variable
+    		int canId = _getCANID_SFF(_canId); //& CAN_SFF_MASK;
+    		//log.debug("canId " + canId);
+    		if (canId > 2047) 
+    		{
+    			log.warn("CanId too big for Standard CANID. Returning max (0x7FF)");
+    			canId = 0x7FF;
+    		}
+    		//_canId&=CAN_SFF_MASK;
+    		return String.format("0x%03X", canId);
+    		//return padToLength(Integer.toString(canId), SFF_LENGTH);
+    	}
+
+    	public String getCanId_EFFHex() {
+
+    		return String.format("0x%08X", _getCANID_EFF(_canId));
+
+    	}
+    	public String getCanId_SFF() {
+    		//return the "small" can-id:
+    		//Do not touch the member variable
+    		int canId = _getCANID_SFF(_canId); //& CAN_SFF_MASK;
+    		//log.debug("canId " + canId);
+    		if (canId > 2047) 
+    		{
+    			log.warn("CanId too big for Standard CANID. Returning max (0x7FF)");
+    			canId = 0x7FF;
+    		}
+    		//_canId&=CAN_SFF_MASK;
+    		return String.format("%03X", canId);
+    		//return padToLength(Integer.toString(canId), SFF_LENGTH);
+    	}
+
+    	public String getCanId_EFF() {
+
+    		return String.format("%08X", _getCANID_EFF(_canId));
+
+    	}
+
         
         @Override
         protected Object clone() {

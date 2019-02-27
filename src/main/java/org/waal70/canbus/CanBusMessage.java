@@ -3,6 +3,8 @@
  */
 package org.waal70.canbus;
 
+import org.waal70.canbus.CanSocket.CanId;
+
 /**
  * @author awaal
  * This class serves as a generic CanBusMessage
@@ -16,7 +18,7 @@ public abstract class CanBusMessage {
 	public int flags;
 	
 		
-	public abstract CanId2 getCanId();
+	public abstract CanId getCanId();
 	public abstract String getHexCanId();
 	
 	public abstract String getMessage();

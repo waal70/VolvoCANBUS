@@ -5,6 +5,7 @@ package org.waal70.canbus;
 
 import org.apache.log4j.Logger;
 import org.waal70.canbus.CanSocket.CanFrame;
+import org.waal70.canbus.CanSocket.CanId;
 
 /**
  * @author awaal
@@ -17,7 +18,7 @@ public class CanMessage extends CanBusMessage {
 	private String _interfaceName;
 	@SuppressWarnings("unused")
 	private int _numBytes = 0;
-	private CanId2 _canId = null;
+	private CanId _canId = null;
 	private String _canData = ""; //HEX string, always 8 bytes long, or 16 characters
 	//send format is ./cansend can0 12312312#ABCDEF4455667788
 	
@@ -75,13 +76,13 @@ public class CanMessage extends CanBusMessage {
 	/**
 	 * @return the _canId
 	 */
-	public CanId2 getCanId() {
+	public CanId getCanId() {
 		return _canId;
 	}
 	/**
 	 * @param _canId the _canId to set
 	 */
-	public void setCanId(CanId2 _canId) {
+	public void setCanId(CanId _canId) {
 		this._canId = _canId;
 	}
 	/**
@@ -114,9 +115,9 @@ public class CanMessage extends CanBusMessage {
 	}
 	
 	public void setCanMessage(String strCanId, String _canData) {
-		_canId = new CanId2(Integer.parseInt(strCanId));
+		_canId = new CanId(Integer.parseInt(strCanId));
 		if (strCanId.length() <= 3) 
-			_canId.setEFF(false);
+			_canId.clearEFFSFF();
 				
 		_canData = pruneHexString(_canData);
 		this._canData = _canData;
@@ -174,8 +175,9 @@ public class CanMessage extends CanBusMessage {
 		//First element is interfacename
 		this._interfaceName = result[0];
 		//log.debug("interfaceName = " + _interfaceName);
-		//Second element is canid
-		this._canId = new CanId2(result[1]);
+		//Second element is canid in String format
+		
+		this._canId = new CanId(Integer.parseInt(result[1],16));
 		//log.debug("canID: " + _canId.getCanId_EFFHex());
 		//Third element is datalength
 		this._numBytes = Integer.parseInt(result[2].substring(1,2));
@@ -194,7 +196,7 @@ public class CanMessage extends CanBusMessage {
 		String cmdText = "";
 		if (this._canId!= null)
 		{
-			cmdText = (_canId.isEFF()) ? _canId.getCanId_EFF() : _canId.getCanId_SFF();
+			cmdText = (_canId.isSetEFFSFF()) ? _canId.getCanId_EFF() : _canId.getCanId_SFF();
 		}
 		cmdText += separator;
 		cmdText += _canData;

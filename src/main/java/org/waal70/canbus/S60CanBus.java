@@ -6,6 +6,9 @@ package org.waal70.canbus;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.waal70.canbus.CanSocket.CanFrame;
@@ -29,6 +32,7 @@ public class S60CanBus implements CanBus {
 	private static final boolean FAKE_IT = false;
 	private static final String CAN_INTERFACE = "can0";
 	private boolean _ISLISTENING = false;
+	public long lastReceived = System.currentTimeMillis();
 	private CanSocket mySocket = new CanSocket(Mode.RAW);
 	private CanMessageQueue _cmq;
 	private ProcessBuilder _pb = new ProcessBuilder("/home/awaal/cansend");
@@ -129,21 +133,56 @@ public class S60CanBus implements CanBus {
 	public void listenReal() {
 		_ISLISTENING=true;
 		
-		try {
-			for (CanFrame cf = mySocket.recv(); cf !=null; cf = mySocket.recv())
-			{
-				CanMessage cm = new CanMessage();
-				if (cm.parseReal(cf))
+			TimerTask ttReceive = new TimerTask() {
+				    
+
+					@Override
+						public void run() {
+							CanFrame cf = null;
+							try {
+								cf = mySocket.recv();
+								lastReceived = System.currentTimeMillis();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							CanMessage cm = new CanMessage();
+							if (cm.parseReal(cf))
+							{
+								_cmq.add(cm);
+							}
+							log.debug("Received message" + cf.toString());
+					
+						}
+					  public boolean cancel() {
+						  log.debug("Cancel requested");
+						return super.cancel();
+						  
+					  }
+						
+				};
+				Timer tReceive = new Timer();
+				tReceive.schedule(ttReceive, 0);
+				//tReceive.scheduleAtFixedRate(ttReceive,0,1000);
+				while (System.currentTimeMillis() - lastReceived < 1000)
 				{
-					_cmq.add(cm);
+					log.debug("waiting...");
+					try {
+						TimeUnit.MILLISECONDS.sleep(500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 				}
-				log.debug("Received message" + cf.toString());
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			log.error("IOException thrown");
-			e.printStackTrace();
-		}
+				ttReceive.cancel();
+				tReceive.cancel();
+				//tReceive.
+				
+			
+			
+		
+
 		
 	}
 	public void setLogisticsType(LogisticsType logisticsType) {

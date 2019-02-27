@@ -4,6 +4,7 @@
 package org.waal70.canbus;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +15,6 @@ import org.waal70.canbus.CanSocket.CanFrame;
 import org.waal70.canbus.CanSocket.CanId;
 import org.waal70.canbus.CanSocket.CanInterface;
 import org.waal70.canbus.CanSocket.Mode;
-import org.waal70.canbus.util.net.ProbeInterface;
 
 /**
  * @author awaal
@@ -31,44 +31,20 @@ public class VolvoCANBUS {
 	public static void main(String[] args) throws Exception {
 		initLog4J();
 		log.info("Program start.");
-		//Instantiate two bus-readers. Just for the heck of it :)
+		//Because of the nature of CANBUS (not a queue),
+		// I need a single canbuslistener that will fill up a queue.
 		
-		ExecutorService es = Executors.newCachedThreadPool();
-		es.execute(new S60CanBusReader("Reader een"));
-		es.execute(new S60CanBusReader("Reader twee"));
+		S60CanBusReader scbr = new S60CanBusReader("Single Reader");
+		scbr.start();
 		canBusWrite();
-		 canBusWrite();
-		 canBusWrite();
-		 canBusWrite();
-		//TimeUnit.SECONDS.sleep(5);
-	    canBusWrite();
-			
-		es.shutdownNow();
-		es.awaitTermination(1000, TimeUnit.MILLISECONDS);
-
-
-
-	
-	
-		//log.info(CanMessageQueue.getInstance().poll().messageAsCommand());
-		if (!ProbeInterface.findInterface("can0"))
-			log.error("No CAN interface found!");
-		//ProbeInterface.listInterfaces();
-		//log.info(ProbeInterface.listInterfaces());
-			
-			
-		//pi.listInterfaces();
 		
-	 	 
-		 //cm.setCanId("12312312");
-		 //the extended can-id has 4 bytes (actually 29 bits, but who cares)
-		 // the regular can-id has 3 characters (11 bits, but who cares)
+		log.info("SEND MESSAGE NOW!");
+		 
+		 TimeUnit.SECONDS.sleep(5);
+		 scbr.interrupt();
+		 log.debug("waiting for thread to die");
+		 scbr.join(1000);
 
-		 // filter on can-id 12312312:
-		 //./candump can0,12312312:1fffffff
-		 //
-		 // messages arrive as (HEX encoded):
-		 //  can0  12312312   [8]  11 22 33 44 55 66 77 88
 		log.info("Reached end of main-thread.");
 
 
@@ -78,9 +54,10 @@ public class VolvoCANBUS {
 		try (final CanSocket socket = new CanSocket(Mode.RAW)) {
             final CanInterface canif = new CanInterface(socket, "can0");
             socket.bind(canif);
-            socket.setLoopbackMode(true);
-            CanId ci = new CanId(12312312);
+            //socket.setLoopbackMode(true);
+            CanId ci = new CanId(18874401);
             ci.setEFFSFF();
+            log.debug("CanId: " + ci.getCanId_EFF());
             socket.send(new CanFrame(canif,
                     ci, new byte[] {0,0,0,0,0,0,0,0}));
       }
