@@ -127,7 +127,14 @@ public final class CanSocket implements Closeable {
     private static native int _fetch_CAN_RAW_FD_FRAMES();
     
     private static final int CAN_RAW_FILTER = _fetch_CAN_RAW_FILTER();
-    private static final int CAN_RAW_ERR_FILTER = _fetch_CAN_RAW_ERR_FILTER();
+    /**
+	 * @return the canRawFilter
+	 */
+	public static int getCanRawFilter() {
+		return CAN_RAW_FILTER;
+	}
+
+	private static final int CAN_RAW_ERR_FILTER = _fetch_CAN_RAW_ERR_FILTER();
     private static final int CAN_RAW_LOOPBACK = _fetch_CAN_RAW_LOOPBACK();
     private static final int CAN_RAW_RECV_OWN_MSGS = _fetch_CAN_RAW_RECV_OWN_MSGS();
     private static final int CAN_RAW_FD_FRAMES = _fetch_CAN_RAW_FD_FRAMES();
@@ -468,6 +475,10 @@ public final class CanSocket implements Closeable {
     @Override
     public void close() throws IOException {
         _close(_fd);
+    }
+    
+    public void setSocketOptions(int _stat) throws IOException {
+    	_setsockopt(_fd, CAN_RAW_FILTER, _stat);
     }
     
     public int getMtu(final String canif) throws IOException {

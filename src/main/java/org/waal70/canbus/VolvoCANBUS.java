@@ -28,18 +28,18 @@ public class VolvoCANBUS {
 	public static void main(String[] args) throws Exception {
 		initLog4J();
 		log.info("Program start.");
-		//Because of the nature of CANBUS (not a queue),
+		// Because of the nature of CANBUS (not a queue),
 		// I need a single canbuslistener that will fill up a queue.
 		
 		S60CanBusReader scbr = new S60CanBusReader("Single Reader");
 		scbr.start();
-		//canBusWrite();
+		canBusWrite();
 		
 		log.info("SEND MESSAGE NOW!");
 		
 		while (scbr.isAlive())
 		{
-		   TimeUnit.MILLISECONDS.sleep(500);
+		   TimeUnit.MILLISECONDS.sleep(1000);
 		   log.debug("waiting for thread to die");
 		}
 		log.debug("Thread no longer alive..");

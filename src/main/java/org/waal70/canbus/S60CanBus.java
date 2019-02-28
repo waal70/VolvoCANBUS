@@ -33,6 +33,7 @@ public class S60CanBus implements CanBus {
 	private static Logger log = Logger.getLogger(S60CanBus.class);
 	private static final boolean FAKE_IT = false;
 	private static final String CAN_INTERFACE = "can0";
+	private static final int CAN_SFF_MASK = 0x000007FF;
 	private boolean _ISLISTENING = false;
 	public long lastReceived = System.currentTimeMillis();
 	private CanSocket mySocket = new CanSocket(Mode.RAW);
@@ -125,13 +126,11 @@ public class S60CanBus implements CanBus {
 				try {
 					for (String line = _br.readLine(); line != null; line = _br.readLine()) {
 						CanMessage cm = new CanMessage();
-						if (cm.parseMessage(line)) {
+						if (cm.parseMessage(line)) 
 							_cmq.add(cm);
-							// log.debug("Message from parsed line: " + cm.messageAsCommand());
-						}
 					}
 				} catch (IOException e) {
-					log.error("Fout");
+					log.error("Fout bij readLine(): " + e.getLocalizedMessage());
 				}
 				return "OK";
 			}
@@ -155,35 +154,51 @@ public class S60CanBus implements CanBus {
 
 	public void listenReal() {
 		_ISLISTENING = true;
-
+		log.debug("Socket options: " + CanSocket.getCanRawFilter());
+		int canId = 2046;
+		log.debug("filter is: " + canId);
+		
+		try {
+			mySocket.setSocketOptions(canId);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		int i = 0;
 		ExecutorService es = Executors.newCachedThreadPool();
 		while (_ISLISTENING) {
-			log.debug("Creating new FUTURE");
-			Future<?> future = es.submit(new Callable<Object>() {
+			log.debug("Creating new FUTURE: sequence number is " + i++);
+			Future<?> future = es.submit(new Callable<String>() {
 
 				public String call() {
 					try {
-						CanFrame cf = mySocket.recv(); 
-							CanMessage cm = new CanMessage();
-							if (cm.parseReal(cf)) {
-								_cmq.add(cm);
-								lastReceived = System.currentTimeMillis();
-							}
-							log.debug("Received message" + cf.toString());
-							return "OK";
-					}
-					 catch (IOException e) {
-						log.error("Exception on receive");
+						CanFrame cf = mySocket.recv();
+						CanMessage cm = new CanMessage();
+						if (cm.parseReal(cf)) {
+							_cmq.add(cm);
+							lastReceived = System.currentTimeMillis();
+						}
+						log.debug("Received message: " + cf.toString());
+						return "OK";
+					} catch (IOException e) {
+						log.error("Exception on mySocket.recv()" + e.getLocalizedMessage());
 						return "NOK";
 					}
-					
+
 				}
 
 			});
 			try {
 				// if I keep on getting OKs, I keep on receiving:
 				if (future.get(5, TimeUnit.SECONDS) == "OK") {
+					// The task has responded timely, going round for another one.
 					log.debug("OK received, doing another round!");
+				} else {
+					// The task did complete within the timeout period, but the
+					// response was something unexpected.
+					log.error("mySocket.recv() did not time-out, but errored out. Aborting.");
+					_ISLISTENING = false;
+					future.cancel(true);
 				}
 			} catch (TimeoutException | InterruptedException | ExecutionException e) {
 				log.debug("Timeout. _ISLISTENING to false " + e.getLocalizedMessage());
@@ -192,9 +207,7 @@ public class S60CanBus implements CanBus {
 
 			}
 		} // end while islistening
-			// future.cancel(true);
 		es.shutdownNow();
-
 	}
 
 	public void setLogisticsType(LogisticsType logisticsType) {
