@@ -35,11 +35,15 @@ public class S60CanBusReader extends Thread{
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
 	 */
-	@Override
 	public void run() {
 		log.debug("run() called for thread " + _threadName);
 		_scb.connect();
 		_scb.listenReal();
+		//if we are returning from the listen-function, it means
+		// that we need to stop running!
+		this.interrupt();
+		//_scb.listen();
+		log.debug("end of run()");
 	}
 
 	/* (non-Javadoc)
@@ -47,12 +51,11 @@ public class S60CanBusReader extends Thread{
 	 */
 	@Override
 	public void interrupt() {
-		if (this.isInterrupted())
-			log.debug("Interrupt called and thread is now interrupted");
-		_scb.close();
-		log.debug("closed queue. bye now");
-		//super.interrupt();
-		
+		log.debug("Interrupt called. Thread " + _threadName + " is signing off.");
+		_scb = null;
+		super.interrupt();
 	}
+
+
 
 }

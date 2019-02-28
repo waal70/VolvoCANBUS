@@ -4,9 +4,6 @@
 package org.waal70.canbus;
 
 import java.io.InputStream;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
@@ -36,19 +33,24 @@ public class VolvoCANBUS {
 		
 		S60CanBusReader scbr = new S60CanBusReader("Single Reader");
 		scbr.start();
-		canBusWrite();
+		//canBusWrite();
 		
 		log.info("SEND MESSAGE NOW!");
-		 
-		 TimeUnit.SECONDS.sleep(5);
-		 scbr.interrupt();
-		 log.debug("waiting for thread to die");
-		 scbr.join(1000);
+		
+		while (scbr.isAlive())
+		{
+		   TimeUnit.MILLISECONDS.sleep(500);
+		   log.debug("waiting for thread to die");
+		}
+		log.debug("Thread no longer alive..");
+		 scbr.join(5000);
 
 		log.info("Reached end of main-thread.");
+		System.exit(0);
 
 
 	}
+	@SuppressWarnings("unused")
 	private static void canBusWrite()
 	{
 		try (final CanSocket socket = new CanSocket(Mode.RAW)) {

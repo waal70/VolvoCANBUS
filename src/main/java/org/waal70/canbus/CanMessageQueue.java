@@ -19,8 +19,8 @@ public class CanMessageQueue extends ConcurrentLinkedQueue<CanMessage> {
 	 */
 	private static final long serialVersionUID = 1302059239381608721L;
 	private static Logger log = Logger.getLogger(CanMessageQueue.class);
-	//Here is the implementation of the singleton pattern
-	// as the queue should be central to the application
+	// Here is the implementation of the singleton pattern
+	// as the queue should be central to the application 
 	
 	private static class SingletonHelper{
         private static final CanMessageQueue INSTANCE = new CanMessageQueue();
@@ -35,14 +35,12 @@ public class CanMessageQueue extends ConcurrentLinkedQueue<CanMessage> {
 	private CanMessageQueue() {
 		super();
 		log.info("queue constructed");
-		// TODO Auto-generated constructor stub
 	}
 	/**
 	 * @param c
 	 */
 	public CanMessageQueue(Collection<? extends CanMessage> c) {
 		super(c);
-		// TODO Auto-generated constructor stub
 	}
 
 }
