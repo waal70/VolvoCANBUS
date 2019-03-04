@@ -5,6 +5,7 @@ package org.waal70.canbus;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -14,6 +15,7 @@ import org.waal70.canbus.CanSocket.CanFrame;
 import org.waal70.canbus.CanSocket.CanId;
 import org.waal70.canbus.CanSocket.CanInterface;
 import org.waal70.canbus.CanSocket.Mode;
+import org.waal70.canbus.util.net.ProbeInterface;
 
 /**
  * @author awaal
@@ -32,8 +34,28 @@ public class VolvoCANBUS {
 		initLog4J();
 		initProperties();
 		log.info("Program start.");
-		// Because of the nature of CANBUS (not a queue),
-		// I need a single canbuslistener that will fill up a queue.
+		//This will test the canbus:
+		doCanbus();
+		//this will test the utilities
+		//testUtil();
+
+		log.info("Program end.");
+		System.exit(0);
+
+
+	}
+	
+	@SuppressWarnings("unused")
+	private static void testUtil() throws SocketException
+	{
+		ProbeInterface.listInterfaces();
+		log.debug(ProbeInterface.confirmCanBusPresentAndActive());
+	}
+	
+	
+	@SuppressWarnings("unused")
+	private static void doCanbus() throws Exception
+	{
 		
 		S60CanBusReader scbr = new S60CanBusReader("Single Reader");
 		scbr.start();
@@ -49,11 +71,7 @@ public class VolvoCANBUS {
 		 scbr.join(5000);
 		 
 		log.info("Number of messages in queue: " + CanMessageQueue.getInstance().size());
-
-		log.info("Program end.");
-		System.exit(0);
-
-
+		
 	}
 
 	private static void canBusWrite()
@@ -73,6 +91,7 @@ public class VolvoCANBUS {
     	  log.error("Oops");
       }
 	}
+
 	private static void initProperties()
 	{
 		InputStream is = VolvoCANBUS.class.getResourceAsStream("/VolvoCANBUS.properties");
