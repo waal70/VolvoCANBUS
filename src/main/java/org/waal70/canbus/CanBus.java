@@ -17,13 +17,15 @@ public interface CanBus {
 		LIFO,
 		RANDOM
 	}
+	static enum CanBusType {
+		FILEBASED,
+		IFBASED
+	}
 	public boolean connect();
 	public void close();
 	public void listen();
-	public CanBusMessage dequeue();
 	public void setLogisticsType(CanBus.LogisticsType logisticsType);
 	public void setListenFilter(int iFilter);
-	public int getQueueLength();
 	public int getListenFilter();
 	public void clearListenFilter();
 	

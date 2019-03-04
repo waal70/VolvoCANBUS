@@ -4,6 +4,7 @@
 package org.waal70.canbus;
 
 import org.apache.log4j.Logger;
+import org.waal70.canbus.CanBus.CanBusType;
 
 /**
  * @author awaal
@@ -13,7 +14,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class S60CanBusReader extends Thread{
-	private S60CanBus _scb;
+	private CanBus _scb;
 	private String _threadName;
 	private static Logger log = Logger.getLogger(S60CanBusReader.class);
 
@@ -23,13 +24,13 @@ public class S60CanBusReader extends Thread{
 	public S60CanBusReader(String threadName) {
 		log.debug("CanbusReaderThread started, its name is " + threadName);
 		_threadName = threadName;
-		_scb = new S60CanBus(CanMessageQueue.getInstance());
+		log.info ("Creating a reader based on the set type: " + VolvoCANBUS.CANBUSMODE);
+		
+		if (VolvoCANBUS.CANBUSMODE == CanBusType.FILEBASED)
+			_scb = new S60FileBasedCanBus(CanMessageQueue.getInstance());
+		else
+			_scb = new S60IFBasedCanBus(CanMessageQueue.getInstance());
 
-	}
-
-	public CanMessageQueue getCanMessageQueue()
-	{
-		return _scb.getQueue();
 	}
 
 	/* (non-Javadoc)
@@ -38,11 +39,10 @@ public class S60CanBusReader extends Thread{
 	public void run() {
 		log.debug("run() called for thread " + _threadName);
 		_scb.connect();
-		_scb.listenReal();
+		_scb.listen();
 		// if we are returning from the listen-function, it means
 		// that we need to stop running!
 		this.interrupt();
-		//_scb.listen();
 		log.debug("end of run()");
 	}
 

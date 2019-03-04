@@ -1,0 +1,154 @@
+/**
+ * 
+ */
+package org.waal70.canbus;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import org.apache.log4j.Logger;
+
+/**
+ * @author awaal
+ *
+ */
+public class S60FileBasedCanBus implements CanBus {
+	private static Logger log = Logger.getLogger(S60FileBasedCanBus.class);
+	private ProcessBuilder _pb = new ProcessBuilder("/Users/awaal/cansend");
+	private Process _p;
+	private BufferedReader _br;
+	private boolean _ISLISTENING = false;
+	private CanMessageQueue _cmq;
+
+	/**
+	 * 
+	 */
+	public S60FileBasedCanBus(CanMessageQueue _cmq) {
+		super();
+		this._cmq = _cmq;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.waal70.canbus.CanBus#connect()
+	 */
+	@Override
+	public boolean connect() {
+		log.debug("Connecting to bus...(FAKING)");
+		log.debug("PB: " + _pb.toString());
+			try {
+				_p = _pb.start();
+				_br = new BufferedReader(new InputStreamReader(_p.getInputStream()));
+			} catch (IOException e) {
+				log.error("Kan process niet starten: " + e.getLocalizedMessage());
+			}
+			return true;
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.waal70.canbus.CanBus#close()
+	 */
+	@Override
+	public void close() {
+		if (_pb != null)
+			_pb = null;
+
+		if (_br != null)
+			try {
+				_br.close();
+			} catch (IOException e) {
+				log.error("Cannot close buffered reader. Setting to null");
+				_br = null;
+			}
+		if (_p != null)
+			_p.destroyForcibly();
+		log.debug("CanBus closed.");
+
+
+	}
+
+	/* (non-Javadoc)
+	 * @see org.waal70.canbus.CanBus#listen()
+	 */
+	@Override
+	public void listen() {
+		_ISLISTENING = true;
+
+		ExecutorService es = Executors.newSingleThreadExecutor();
+		Future<?> future = es.submit(new Callable<Object>() {
+
+			public String call() {
+				try {
+					for (String line = _br.readLine(); line != null; line = _br.readLine()) {
+						CanMessage cm = new CanMessage();
+						if (cm.parseMessage(line)) 
+							_cmq.add(cm);
+					}
+				} catch (IOException e) {
+					log.error("Fout bij readLine(): " + e.getLocalizedMessage());
+				}
+				return "OK";
+			}
+
+		});
+		try {
+			log.debug("Timing (final) call to 2 seconds: " + future.get(2, TimeUnit.SECONDS));
+		} catch (TimeoutException e) {
+			log.debug("Timeout");
+		} catch (InterruptedException e) {
+			if(_ISLISTENING)
+				log.error("But I was listening...Boohoo");
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		es.shutdownNow();
+		return;
+
+	}
+	/* (non-Javadoc)
+	 * @see org.waal70.canbus.CanBus#setLogisticsType(org.waal70.canbus.CanBus.LogisticsType)
+	 */
+	@Override
+	public void setLogisticsType(LogisticsType logisticsType) {
+		// TODO Auto-generated method stub
+
+	}
+
+	/* (non-Javadoc)
+	 * @see org.waal70.canbus.CanBus#setListenFilter(int)
+	 */
+	@Override
+	public void setListenFilter(int iFilter) {
+		// TODO Auto-generated method stub
+
+	}
+
+	/* (non-Javadoc)
+	 * @see org.waal70.canbus.CanBus#getListenFilter()
+	 */
+	@Override
+	public int getListenFilter() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.waal70.canbus.CanBus#clearListenFilter()
+	 */
+	@Override
+	public void clearListenFilter() {
+		// TODO Auto-generated method stub
+
+	}
+
+}

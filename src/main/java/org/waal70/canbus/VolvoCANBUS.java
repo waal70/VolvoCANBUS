@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.waal70.canbus.CanBus.CanBusType;
 import org.waal70.canbus.CanSocket.CanFrame;
 import org.waal70.canbus.CanSocket.CanId;
 import org.waal70.canbus.CanSocket.CanInterface;
@@ -19,6 +20,7 @@ import org.waal70.canbus.CanSocket.Mode;
  */
 public class VolvoCANBUS {
 	private static Logger log = Logger.getLogger(VolvoCANBUS.class);
+	public final static CanBusType CANBUSMODE = CanBus.CanBusType.IFBASED;
 	
 
 	/**
@@ -35,8 +37,6 @@ public class VolvoCANBUS {
 		scbr.start();
 		canBusWrite();
 		
-		log.info("SEND MESSAGE NOW!");
-		
 		while (scbr.isAlive())
 		{
 		   TimeUnit.MILLISECONDS.sleep(1000);
@@ -44,13 +44,15 @@ public class VolvoCANBUS {
 		}
 		log.debug("Thread no longer alive..");
 		 scbr.join(5000);
+		 
+		log.debug("Number of messages in queue: " + CanMessageQueue.getInstance().size());
 
 		log.info("Reached end of main-thread.");
 		System.exit(0);
 
 
 	}
-	@SuppressWarnings("unused")
+
 	private static void canBusWrite()
 	{
 		try (final CanSocket socket = new CanSocket(Mode.RAW)) {
