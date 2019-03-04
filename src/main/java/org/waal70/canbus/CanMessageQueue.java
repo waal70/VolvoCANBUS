@@ -34,13 +34,22 @@ public class CanMessageQueue extends ConcurrentLinkedQueue<CanMessage> {
 	 */
 	private CanMessageQueue() {
 		super();
-		log.info("queue constructed");
+		log.info("CanMessageQueue constructed.");
 	}
 	/**
 	 * @param c
 	 */
 	public CanMessageQueue(Collection<? extends CanMessage> c) {
 		super(c);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.util.concurrent.ConcurrentLinkedQueue#add(java.lang.Object)
+	 */
+	@Override
+	public boolean add(CanMessage e) {
+		log.debug("CanMessageQueue add. Size now: " + (this.size() + 1));
+		return super.add(e);
 	}
 
 }

@@ -17,10 +17,6 @@ public interface CanBus {
 		LIFO,
 		RANDOM
 	}
-	static enum CanBusType {
-		FILEBASED,
-		IFBASED
-	}
 	public boolean connect();
 	public void close();
 	public void listen();

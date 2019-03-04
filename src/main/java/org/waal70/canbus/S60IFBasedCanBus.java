@@ -38,7 +38,6 @@ public class S60IFBasedCanBus implements CanBus {
 	private CanInterface _canif;
 
 	public boolean connect() {
-		log.debug("Connecting to bus...(REAL)");
 		try {
 			_canif = new CanInterface(mySocket, CAN_INTERFACE);
 			mySocket.bind(_canif);
@@ -127,6 +126,7 @@ public class S60IFBasedCanBus implements CanBus {
 
 	public S60IFBasedCanBus(CanMessageQueue _cmq) {
 		super();
+		log.info("Instantiating an interface-based CanBus.");
 		this._cmq = _cmq;
 	}
 

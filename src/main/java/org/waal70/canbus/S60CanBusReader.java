@@ -4,13 +4,13 @@
 package org.waal70.canbus;
 
 import org.apache.log4j.Logger;
-import org.waal70.canbus.CanBus.CanBusType;
 
 /**
  * @author awaal
- * This is the  CANBUS reader
- * It will connect to the representation of the Canbus
- * and queue messages it receives
+ * This is the  Workerthread for the reading the canbus
+ * Based on the required type, it will instantiate a
+ * concrete CanBus, connect to it, and make the
+ * concrete CanBus listen.
  *
  */
 public class S60CanBusReader extends Thread{
@@ -24,9 +24,9 @@ public class S60CanBusReader extends Thread{
 	public S60CanBusReader(String threadName) {
 		log.debug("CanbusReaderThread started, its name is " + threadName);
 		_threadName = threadName;
-		log.info ("Creating a reader based on the set type: " + VolvoCANBUS.CANBUSMODE);
+		log.info ("Creating a reader based on the set type: " + VolvoCANBUS.prop.getProperty("VolvoCANBUS.CanBusType"));
 		
-		if (VolvoCANBUS.CANBUSMODE == CanBusType.FILEBASED)
+		if (VolvoCANBUS.prop.getProperty("VolvoCANBUS.CanBusType").equalsIgnoreCase("FILEBASED"))
 			_scb = new S60FileBasedCanBus(CanMessageQueue.getInstance());
 		else
 			_scb = new S60IFBasedCanBus(CanMessageQueue.getInstance());

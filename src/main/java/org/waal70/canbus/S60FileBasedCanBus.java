@@ -22,10 +22,9 @@ import org.apache.log4j.Logger;
  */
 public class S60FileBasedCanBus implements CanBus {
 	private static Logger log = Logger.getLogger(S60FileBasedCanBus.class);
-	private ProcessBuilder _pb = new ProcessBuilder("/Users/awaal/cansend");
+	private ProcessBuilder _pb = new ProcessBuilder(VolvoCANBUS.prop.getProperty("VolvoCANBUS.SendProcess"));
 	private Process _p;
 	private BufferedReader _br;
-	private boolean _ISLISTENING = false;
 	private CanMessageQueue _cmq;
 
 	/**
@@ -33,6 +32,7 @@ public class S60FileBasedCanBus implements CanBus {
 	 */
 	public S60FileBasedCanBus(CanMessageQueue _cmq) {
 		super();
+		log.info("Instantiating a FileBased Canbus.");
 		this._cmq = _cmq;
 	}
 
@@ -41,13 +41,11 @@ public class S60FileBasedCanBus implements CanBus {
 	 */
 	@Override
 	public boolean connect() {
-		log.debug("Connecting to bus...(FAKING)");
-		log.debug("PB: " + _pb.toString());
 			try {
 				_p = _pb.start();
 				_br = new BufferedReader(new InputStreamReader(_p.getInputStream()));
 			} catch (IOException e) {
-				log.error("Kan process niet starten: " + e.getLocalizedMessage());
+				log.error("Cannot start: " + e.getLocalizedMessage());
 			}
 			return true;
 		
@@ -65,12 +63,12 @@ public class S60FileBasedCanBus implements CanBus {
 			try {
 				_br.close();
 			} catch (IOException e) {
-				log.error("Cannot close buffered reader. Setting to null");
+				log.error("Cannot close buffered reader. Setting to null.");
 				_br = null;
 			}
 		if (_p != null)
 			_p.destroyForcibly();
-		log.debug("CanBus closed.");
+		log.debug("File-based CanBus closed.");
 
 
 	}
@@ -80,7 +78,6 @@ public class S60FileBasedCanBus implements CanBus {
 	 */
 	@Override
 	public void listen() {
-		_ISLISTENING = true;
 
 		ExecutorService es = Executors.newSingleThreadExecutor();
 		Future<?> future = es.submit(new Callable<Object>() {
@@ -102,13 +99,10 @@ public class S60FileBasedCanBus implements CanBus {
 		try {
 			log.debug("Timing (final) call to 2 seconds: " + future.get(2, TimeUnit.SECONDS));
 		} catch (TimeoutException e) {
-			log.debug("Timeout");
+			log.debug("Timeout on readLine(). Quitting anyway.");
 		} catch (InterruptedException e) {
-			if(_ISLISTENING)
-				log.error("But I was listening...Boohoo");
 			e.printStackTrace();
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		es.shutdownNow();

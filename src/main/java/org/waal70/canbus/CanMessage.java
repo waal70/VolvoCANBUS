@@ -140,7 +140,7 @@ public class CanMessage extends CanBusMessage {
 		log.info("CanId SFF: "+ _cf.getCanId().getCanId_SFF());
 		log.info("CanId EFF: "+ _cf.getCanId().getCanId_EFF());
 		this._canData = bytesToHex(data);
-		log.info("data is: " + bytesToHex(data));
+		log.info("HEX representation of data is: " + this._canData);
 		return true;
 	}
 	
@@ -153,7 +153,7 @@ public class CanMessage extends CanBusMessage {
 		 //should yield AT LEAST 11 parts...
 		 if (wholeMessageSplit.length < 11)
 		 {
-			 log.error("Incorrect dump-message. Skipping this garbage input: [" + wholeMessage + "]");
+			 log.error("Too few parts received. Discarding: [" + wholeMessage + "]");
 			 return false;
 		 }
 		 String[] result = new String[11];
