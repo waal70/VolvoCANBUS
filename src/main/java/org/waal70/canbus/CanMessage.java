@@ -196,7 +196,7 @@ public class CanMessage extends CanBusMessage {
 		String cmdText = "";
 		if (this._canId!= null)
 		{
-			cmdText = (_canId.isSetEFFSFF()) ? _canId.getCanId_EFF() : _canId.getCanId_SFF();
+			cmdText = (_canId.isSetEFFSFF()) ? _canId.getCanId_EFFHex() : _canId.getCanId_SFFHex();
 		}
 		cmdText += separator;
 		cmdText += _canData;
