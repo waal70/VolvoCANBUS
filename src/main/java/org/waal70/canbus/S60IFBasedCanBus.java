@@ -38,6 +38,9 @@ public class S60IFBasedCanBus implements CanBus {
 	private boolean _ISLISTENING = false;
 	private CanSocket mySocket = new CanSocket(Mode.RAW);
 	private CanMessageQueue _cmq;
+	
+//	private final Set<CanFilter> filters = new HashSet<>();
+//	private CanFilter[] filterArray = new CanFilter[0];
 
 	private CanInterface _canif;
 
@@ -48,6 +51,7 @@ public class S60IFBasedCanBus implements CanBus {
 		try {
 			_canif = new CanInterface(mySocket, CAN_INTERFACE);
 			mySocket.bind(_canif);
+
 		} catch (IOException e) {
 			log.error("IOException when opening socket. " + e.getLocalizedMessage());
 			return false;
@@ -75,7 +79,16 @@ public class S60IFBasedCanBus implements CanBus {
 
 				public String call() {
 					try {
+						//CanId filterid = new CanId(123456);
+						//filterid.setEFFSFF();
+						//CanFilter filter1 = new CanFilter(filterid, -1);
+												
+						//log.debug("Filter match? : " + filter1.matchId(123456));
+						//CanFilter[] filterArray = {filter1};
+						//mySocket.setFilters(filterArray);
+						//mySocket.setFilters(data);
 						CanFrame cf = mySocket.recv();
+						mySocket.getFilters();
 						CanMessage cm = new CanMessage();
 						if (cm.parseReal(cf)) {
 							_cmq.add(cm);

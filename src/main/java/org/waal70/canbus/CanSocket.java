@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -24,21 +26,21 @@ import org.apache.log4j.Logger;
 public final class CanSocket implements Closeable {
 	private static Logger log = Logger.getLogger(CanSocket.class);
     static {
-    	log.debug("Trying to load native library");
+    	//log.debug("Trying to load native library");
     	final String LIB_JNI_SOCKETCAN = "jni_socketcan";
         try {
-        	log.debug("Try loadLibrary");
+        	//log.debug("Try loadLibrary");
              System.loadLibrary(LIB_JNI_SOCKETCAN);
         } catch (final UnsatisfiedLinkError e) {
             try {
-            	log.debug("Try load from JAR");
+            	//log.debug("Try load from JAR");
                 loadLibFromJar(LIB_JNI_SOCKETCAN);
             } catch (final IOException _e) {
-            	log.error("Cannot load native library");
+            	//log.error("Cannot load native library");
                 throw new UnsatisfiedLinkError(LIB_JNI_SOCKETCAN);
             }
         }
-        log.debug("Succesfully loaded native library");
+        //log.debug("Succesfully loaded native library");
     }
 
     private static void copyStream(final InputStream in,
@@ -54,7 +56,7 @@ public final class CanSocket implements Closeable {
             throws IOException {
         Objects.requireNonNull(libName);
         final String fileName = "/lib/lib" + libName + ".so";
-        log.debug("Load from JAR: " + fileName);
+        //log.debug("Load from JAR: " + fileName);
         final FileAttribute<Set<PosixFilePermission>> permissions =
                 PosixFilePermissions.asFileAttribute(
                         PosixFilePermissions.fromString("rw-------"));
@@ -125,6 +127,35 @@ public final class CanSocket implements Closeable {
     private static native int _fetch_CAN_RAW_LOOPBACK();
     private static native int _fetch_CAN_RAW_RECV_OWN_MSGS();
     private static native int _fetch_CAN_RAW_FD_FRAMES();
+    private static native int _setFilters(final int fd, ByteBuffer data);
+    private static native ByteBuffer _getFilters (final int fd); 
+    
+    
+    public void setFilters(CanFilter[] data)
+    //public void setFilters(Object[] data)
+    
+    {
+    	ByteBuffer filterData = ByteBuffer.allocateDirect(data.length * CanFilter.BYTES);
+    	//ByteBuffer filterData = ByteBuffer.allocateDirect(data.length * 2);
+    	filterData.order(ByteOrder.nativeOrder());
+    	for (CanFilter f : data) {
+    		//log.debug("f.getId()" + f.getId());
+    		//log.debug("f.getMask()" + String.format("0x%08X", f.getMask()));
+    		filterData.putInt(f.getId());
+    		filterData.putInt(f.getMask());
+       		} 
+   	
+        	if (CanSocket._setFilters(_fd, filterData) == -1)
+        		//log.debug("Filter set error");
+        		System.out.println("Filter error");
+    }
+    
+    public void getFilters() {
+    	ByteBuffer filterData = CanSocket._getFilters(_fd);
+    	if (filterData != null)
+    	{log.debug("Getting FILTER: " + filterData.toString());
+    	filterData.rewind();}
+       }
     
     private static final int CAN_RAW_FILTER = _fetch_CAN_RAW_FILTER();
     /**
@@ -199,11 +230,11 @@ public final class CanSocket implements Closeable {
         
  /*        public int getCanId_SFF() {
             return _getCANID_SFF(_canId);
-        }
-        
-        public int getCanId_EFF() {
-            return _getCANID_EFF(_canId);
         } */
+        
+        public int getCanId() {
+            return _getCANID_EFF(_canId);
+        }
         
         public int getCanId_ERR() {
             return _getCANID_ERR(_canId);
@@ -217,7 +248,7 @@ public final class CanSocket implements Closeable {
     		//log.debug("canId " + canId);
     		if (canId > 2047) 
     		{
-    			log.warn("CanId too big for Standard CANID. Returning max (0x7FF)");
+    			//log.warn("CanId too big for Standard CANID. Returning max (0x7FF)");
     			canId = 0x7FF;
     		}
     		//_canId&=CAN_SFF_MASK;
@@ -237,7 +268,7 @@ public final class CanSocket implements Closeable {
     		//log.debug("canId " + canId);
     		if (canId > 2047) 
     		{
-    			log.warn("CanId too big for Standard CANID. Returning max (0x7FF)");
+    			//log.warn("CanId too big for Standard CANID. Returning max (0x7FF)");
     			canId = 0x7FF;
     		}
     		//_canId&=CAN_SFF_MASK;
