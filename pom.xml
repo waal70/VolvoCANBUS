@@ -103,7 +103,7 @@
 								<!--  run the JAR file on the Raspberry Pi -->
 								 <sshexec host="${pi.host}" 
 									port="${pi.port}" username="${pi.user}" password="${pi.password}" trust="true" 
-									failonerror="false" verbose="true" command="java -jar ${pi.deployDirectory}/${project.build.finalName}-jar-with-dependencies.jar"/> 
+									failonerror="false" verbose="true" command="java -jar ${pi.deployDirectory}/${project.build.finalName}-jar-with-dependencies.jar -classpath ${pi.deployDirectory}libsocket.jar"/> 
 							</target>
 						</configuration>
 					</execution>

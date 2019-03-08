@@ -40,7 +40,7 @@ public class VolvoCANBUS {
 		//testUtil();
 
 		log.info("Program end.");
-		System.exit(0);
+		//System.exit(0);
 
 
 	}
