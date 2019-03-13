@@ -22,7 +22,6 @@
 			<groupId>org.waal70.canbus</groupId>
 			<artifactId>libsocket-can-java</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 	<properties>
