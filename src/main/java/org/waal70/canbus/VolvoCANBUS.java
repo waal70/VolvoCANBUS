@@ -53,7 +53,7 @@ public class VolvoCANBUS {
 	}
 	
 	
-	@SuppressWarnings("unused")
+
 	private static void doCanbus() throws Exception
 	{
 		
