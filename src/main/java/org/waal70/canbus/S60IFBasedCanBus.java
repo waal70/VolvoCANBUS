@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -16,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.log4j.Logger;
+import org.waal70.canbus.CanSocket.CanFilter;
 import org.waal70.canbus.CanSocket.CanFrame;
 import org.waal70.canbus.CanSocket.CanInterface;
 import org.waal70.canbus.CanSocket.Mode;
@@ -39,8 +42,8 @@ public class S60IFBasedCanBus implements CanBus {
 	private CanSocket mySocket = new CanSocket(Mode.RAW);
 	private CanMessageQueue _cmq;
 	
-//	private final Set<CanFilter> filters = new HashSet<>();
-//	private CanFilter[] filterArray = new CanFilter[0];
+	private final Set<CanFilter> filters = new HashSet<>();
+	private CanFilter[] filterArray = new CanFilter[0];
 
 	private CanInterface _canif;
 
@@ -79,13 +82,13 @@ public class S60IFBasedCanBus implements CanBus {
 
 				public String call() {
 					try {
-						//CanId filterid = new CanId(123456);
-						//filterid.setEFFSFF();
-						//CanFilter filter1 = new CanFilter(filterid, -1);
+						CanId filterid = new CanId(123456);
+						filterid.setEFFSFF();
+						CanFilter filter1 = new CanFilter(filterid, -1);
 												
 						//log.debug("Filter match? : " + filter1.matchId(123456));
-						//CanFilter[] filterArray = {filter1};
-						//mySocket.setFilters(filterArray);
+						CanFilter[] filterArray = {filter1};
+						mySocket.setFilters(filterArray);
 						//mySocket.setFilters(data);
 						CanFrame cf = mySocket.recv();
 						mySocket.getFilters();
