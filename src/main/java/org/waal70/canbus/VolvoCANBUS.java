@@ -79,10 +79,9 @@ public class VolvoCANBUS {
 		try (final CanSocket socket = new CanSocket(Mode.RAW)) {
             final CanInterface canif = new CanInterface(socket, "can0");
             socket.bind(canif);
-            //socket.setLoopbackMode(true);
-            CanId ci = new CanId(123456);
+            CanId ci = new CanId(0x123456);
             ci.setEFFSFF();
-            log.debug("CanId: " + ci.getCanId_EFF());
+            log.debug("CanId: " + ci.getCanId_EFFHex());
             socket.send(new CanFrame(canif,
                     ci, new byte[] {0,0,0,0,0,0,0,0}));
       }

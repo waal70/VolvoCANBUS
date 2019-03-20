@@ -3,6 +3,8 @@
  */
 package org.waal70.canbus;
 
+import org.waal70.canbus.CanSocket.CanFilter;
+
 /**
  * @author awaal
  *
@@ -21,8 +23,18 @@ public interface CanBus {
 	public void close();
 	public void listen();
 	public void setLogisticsType(CanBus.LogisticsType logisticsType);
-	public void setListenFilter(int iFilter);
-	public int getListenFilter();
+	/**
+	 * This method sets one filter. Use addFilter to add multiple filters
+	 * @param setFilter
+	 */
+	public void setListenFilter(CanFilter setFilter);
+	/**
+	 * This method appends a filter to the filter array
+	 * and subsequently sets it on the socket.
+	 * @param addFilter contains the filter to add
+	 */
+	public void addListenFilter(CanFilter addFilter);
+	public CanFilter[] getListenFilter();
 	public void clearListenFilter();
 	
 	

@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.log4j.Logger;
+import org.waal70.canbus.CanSocket.CanFilter;
 
 /**
  * @author awaal
@@ -119,21 +120,12 @@ public class S60FileBasedCanBus implements CanBus {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.waal70.canbus.CanBus#setListenFilter(int)
-	 */
-	@Override
-	public void setListenFilter(int iFilter) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
 	 * @see org.waal70.canbus.CanBus#getListenFilter()
 	 */
 	@Override
-	public int getListenFilter() {
+	public CanFilter[] getListenFilter() {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -143,6 +135,18 @@ public class S60FileBasedCanBus implements CanBus {
 	public void clearListenFilter() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void setListenFilter(CanFilter setFilter) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addListenFilter(CanFilter addFilter) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

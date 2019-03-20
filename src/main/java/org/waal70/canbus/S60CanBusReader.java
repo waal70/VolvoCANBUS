@@ -39,6 +39,7 @@ public class S60CanBusReader extends Thread{
 	public void run() {
 		log.debug("run() called for thread " + _threadName);
 		_scb.connect();
+		_scb.addListenFilter(null);
 		_scb.listen();
 		// if we are returning from the listen-function, it means
 		// that we need to stop running!

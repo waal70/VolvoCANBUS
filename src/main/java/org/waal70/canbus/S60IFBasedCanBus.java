@@ -7,8 +7,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -20,6 +18,7 @@ import java.util.concurrent.TimeoutException;
 import org.apache.log4j.Logger;
 import org.waal70.canbus.CanSocket.CanFilter;
 import org.waal70.canbus.CanSocket.CanFrame;
+import org.waal70.canbus.CanSocket.CanId;
 import org.waal70.canbus.CanSocket.CanInterface;
 import org.waal70.canbus.CanSocket.Mode;
 import org.waal70.canbus.util.net.ProbeInterface;
@@ -42,9 +41,6 @@ public class S60IFBasedCanBus implements CanBus {
 	private CanSocket mySocket = new CanSocket(Mode.RAW);
 	private CanMessageQueue _cmq;
 	
-	private final Set<CanFilter> filters = new HashSet<>();
-	private CanFilter[] filterArray = new CanFilter[0];
-
 	private CanInterface _canif;
 
 	public boolean connect() {
@@ -82,16 +78,7 @@ public class S60IFBasedCanBus implements CanBus {
 
 				public String call() {
 					try {
-						CanId filterid = new CanId(123456);
-						filterid.setEFFSFF();
-						CanFilter filter1 = new CanFilter(filterid, -1);
-												
-						//log.debug("Filter match? : " + filter1.matchId(123456));
-						CanFilter[] filterArray = {filter1};
-						mySocket.setFilters(filterArray);
-						//mySocket.setFilters(data);
 						CanFrame cf = mySocket.recv();
-						mySocket.getFilters();
 						CanMessage cm = new CanMessage();
 						if (cm.parseReal(cf)) {
 							_cmq.add(cm);
@@ -120,6 +107,7 @@ public class S60IFBasedCanBus implements CanBus {
 				}
 			} catch (TimeoutException | InterruptedException | ExecutionException e) {
 				log.debug("Timeout. _ISLISTENING to false " + e.getLocalizedMessage());
+				//e.printStackTrace();
 				_ISLISTENING = false;
 				future.cancel(true);
 
@@ -132,19 +120,40 @@ public class S60IFBasedCanBus implements CanBus {
 		// TODO Auto-generated method stub
 
 	}
+	@Override
+	public void addListenFilter(CanFilter addFilter) {
+		setListenFilter(addFilter);
+	
+		
+	}
 
-	public void setListenFilter(int iFilter) {
+	public void setListenFilter(CanFilter iFilter) {
+		clearListenFilter();
+		
+		CanId filterid = new CanId(0x123456);
+		filterid.setEFFSFF();
+		log.debug("Setting filter...");
+		//CanFilter filter1 = CanFilter.ANY;
+		CanFilter filter1 = new CanFilter(filterid);
+		log.debug("Filter set...");						
+		//log.debug("Filter match? : " + filter1.matchId(123456));
+		CanFilter[] filterArray = {filter1};
+		mySocket.setFilters(filterArray);
+		
+		log.debug("getFilters: ");
+		mySocket.getFilters();
+		//mySocket.setFilters(data);
 		// TODO Auto-generated method stub
 
 	}
 
-	public int getListenFilter() {
-		// TODO Auto-generated method stub
-		return 0;
+	public CanFilter[] getListenFilter() {
+	
+		return null;
 	}
 
 	public void clearListenFilter() {
-		// TODO Auto-generated method stub
+		mySocket.setFilters(CanFilter.ANY);
 
 	}
 
