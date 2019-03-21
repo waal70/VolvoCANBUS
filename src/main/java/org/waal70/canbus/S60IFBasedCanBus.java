@@ -130,14 +130,19 @@ public class S60IFBasedCanBus implements CanBus {
 	public void setListenFilter(CanFilter iFilter) {
 		clearListenFilter();
 		
-		CanId filterid = new CanId(0x123456);
+		CanId filterid = new CanId(0x12345678);
 		filterid.setEFFSFF();
 		log.debug("Setting filter...");
 		//CanFilter filter1 = CanFilter.ANY;
 		CanFilter filter1 = new CanFilter(filterid);
+		
+		CanId filterid2 = new CanId(0x11223344);
+		filterid2.setEFFSFF();
+		CanFilter filter2 = new CanFilter(filterid2);
+		
 		log.debug("Filter set...");						
 		//log.debug("Filter match? : " + filter1.matchId(123456));
-		CanFilter[] filterArray = {filter1};
+		CanFilter[] filterArray = {filter1,filter2};
 		mySocket.setFilters(filterArray);
 		
 		log.debug("getFilters: ");
