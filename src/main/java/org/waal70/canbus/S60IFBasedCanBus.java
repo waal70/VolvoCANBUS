@@ -19,6 +19,7 @@ import java.util.concurrent.TimeoutException;
 import org.apache.log4j.Logger;
 import org.waal70.canbus.CanSocket.CanFilter;
 import org.waal70.canbus.CanSocket.CanFrame;
+import org.waal70.canbus.CanSocket.CanId;
 import org.waal70.canbus.CanSocket.CanInterface;
 import org.waal70.canbus.CanSocket.Mode;
 import org.waal70.canbus.util.net.ProbeInterface;
@@ -136,6 +137,17 @@ public class S60IFBasedCanBus implements CanBus {
 			_filterArray.add(addFilter);
 		else
 			log.error("filterArray somehow is null!");
+		
+		//even testen:
+		CanId f1id = new CanId(0x12345678);
+		f1id.setEFFSFF();
+		CanId f2id = new CanId(0x87654321);
+		f2id.setEFFSFF();
+		CanFilter f1 = new CanFilter(f1id,0xDFFFFFFF);
+		CanFilter f2 = new CanFilter(f2id,0xDFFFFFFF);
+		_filterArray.clear();
+		_filterArray.add(f1);
+		_filterArray.add(f2);
 		
 		setFilter();
 		
