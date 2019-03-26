@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -18,7 +19,6 @@ import java.util.concurrent.TimeoutException;
 import org.apache.log4j.Logger;
 import org.waal70.canbus.CanSocket.CanFilter;
 import org.waal70.canbus.CanSocket.CanFrame;
-import org.waal70.canbus.CanSocket.CanId;
 import org.waal70.canbus.CanSocket.CanInterface;
 import org.waal70.canbus.CanSocket.Mode;
 import org.waal70.canbus.util.net.ProbeInterface;
@@ -40,6 +40,7 @@ public class S60IFBasedCanBus implements CanBus {
 	private boolean _ISLISTENING = false;
 	private CanSocket mySocket = new CanSocket(Mode.RAW);
 	private CanMessageQueue _cmq;
+	private List<CanFilter> _filterArray = new ArrayList<CanFilter>(); 
 	
 	private CanInterface _canif;
 
@@ -120,36 +121,67 @@ public class S60IFBasedCanBus implements CanBus {
 		// TODO Auto-generated method stub
 
 	}
+	/* (non-Javadoc)
+	 * @see org.waal70.canbus.CanBus#addListenFilter(org.waal70.canbus.CanSocket.CanFilter)
+	 * add filter takes the array of currently assigned filters and adds one to the collection
+	 * It then proceeds to set the new collection.
+	 */
 	@Override
 	public void addListenFilter(CanFilter addFilter) {
-		setListenFilter(addFilter);
-	
+		if (addFilter == null)
+			addFilter = CanFilter.ANY;
+		log.debug("addListenFilter called with filter: " + addFilter.getIdHex());
+		//setListenFilter(addFilter);
+		if (_filterArray != null)
+			_filterArray.add(addFilter);
+		else
+			log.error("filterArray somehow is null!");
+		
+		setFilter();
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.waal70.canbus.CanBus#setListenFilter(org.waal70.canbus.CanSocket.CanFilter)
+	 * This method sets exactly one filter, it therefore clears all other filters and
+	 * then uses the iFilter parameter to set the one filter.
+	 */
 	public void setListenFilter(CanFilter iFilter) {
-		clearListenFilter();
 		
-		CanId filterid = new CanId(0x12345678);
-		filterid.setEFFSFF();
-		log.debug("Setting filter...");
-		//CanFilter filter1 = CanFilter.ANY;
-		CanFilter filter1 = new CanFilter(filterid);
+		if (iFilter == null)
+			iFilter = CanFilter.ANY;
 		
-		CanId filterid2 = new CanId(0x12345678);
-		filterid2.setEFFSFF();
-		CanFilter filter2 = new CanFilter(filterid2);
+		log.debug("setListenFilter entered with filter: " + iFilter.getIdHex());
 		
-		log.debug("Filter set...");						
-		//log.debug("Filter match? : " + filter1.matchId(123456));
-		CanFilter[] filterArray = {filter1, filter2};
+		if (!_filterArray.isEmpty())
+		{
+			_filterArray.clear();
+			clearListenFilter();
+		}
+		
+		_filterArray.add(iFilter);
+
+		setFilter();
+	}
+	
+	private boolean setFilter() {
+		log.debug("setFilter called, going to apply "+_filterArray.size() + " filters.");	
+		
+		if (_filterArray.isEmpty())
+		{
+			//filterArray has no elements, there is therefore no filter to set.
+			//I assume this means clearing it, so here we go:
+			setListenFilter(CanFilter.ANY);
+			return true;
+		}
+		
+		//Triple whammy on the Array type :)
+		CanFilter[] filterArray = ((List<CanFilter>)_filterArray).toArray(new CanFilter[_filterArray.size()]);
 		mySocket.setFilters(filterArray);
-		
 		log.debug("getFilters: ");
 		mySocket.getFilters();
-		//mySocket.setFilters(data);
-		// TODO Auto-generated method stub
-
+		return true;
+		
 	}
 
 	public CanFilter[] getListenFilter() {
