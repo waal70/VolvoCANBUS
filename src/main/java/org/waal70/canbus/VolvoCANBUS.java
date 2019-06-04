@@ -35,6 +35,7 @@ public class VolvoCANBUS {
 		initProperties();
 		log.info("Program start.");
 		//This will test the canbus:
+		//String one = args[0];
 		doCanbus();
 		//this will test the utilities
 		//testUtil();
