@@ -35,15 +35,15 @@
 	<build>
 		<finalName>${project.artifactId}-${project.version}</finalName>
 		<plugins>
-		<plugin>
-		   <artifactId>maven-invoker-plugin</artifactId>
-        	<version>3.2.0</version>
-        		<configuration>
-          			<setupIncludes>
-            			<setupInclude>../libsocket-can-java/pom.xml</setupInclude>
-          			</setupIncludes>
-          			</configuration>
-          			</plugin>
+			<plugin>
+				<artifactId>maven-invoker-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<setupIncludes>
+						<setupInclude>../libsocket-can-java/pom.xml</setupInclude>
+					</setupIncludes>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>3.1.1</version>
@@ -88,48 +88,7 @@
 					<argLine>${argLine}</argLine>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<!-- ensure the target directory exists on the Raspberry Pi -->
-								<sshexec host="${pi.host}" port="${pi.port}"
-									username="${pi.user}" password="${pi.password}" trust="true"
-									failonerror="false" verbose="true"
-									command="mkdir --parents ${pi.deployDirectory}" />
 
-								<!-- copy the JAR file to the Raspberry Pi -->
-								<scp
-									file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar"
-									todir="${pi.user}:${pi.password}@${pi.host}:${pi.deployDirectory}"
-									port="${pi.port}" trust="true" verbose="true"
-									failonerror="true">
-								</scp>
-
-								<!--  run the JAR file on the Raspberry Pi -->
-								 <sshexec host="${pi.host}" 
-									port="${pi.port}" username="${pi.user}" password="${pi.password}" trust="true" 
-									failonerror="false" verbose="true" command="java -jar ${pi.deployDirectory}/${project.build.finalName}-jar-with-dependencies.jar"/> 
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.ant</groupId>
-						<artifactId>ant-jsch</artifactId>
-						<version>1.9.6</version>
-					</dependency>
-				</dependencies>
-			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>properties-maven-plugin</artifactId>
@@ -150,4 +109,57 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>pi-deploy</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.8</version>
+						<executions>
+							<execution>
+								<id>package-antrun</id>
+								<phase>package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<!-- ensure the target directory exists on the Raspberry Pi -->
+										<sshexec host="${pi.host}" port="${pi.port}"
+											username="${pi.user}" password="${pi.password}" trust="true"
+											failonerror="false" verbose="true"
+											command="mkdir --parents ${pi.deployDirectory}" />
+
+										<!-- copy the JAR file to the Raspberry Pi -->
+										<scp
+											file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar"
+											todir="${pi.user}:${pi.password}@${pi.host}:${pi.deployDirectory}"
+											port="${pi.port}" trust="true" verbose="true"
+											failonerror="true">
+										</scp>
+
+										<!-- run the JAR file on the Raspberry Pi -->
+										<sshexec host="${pi.host}" port="${pi.port}"
+											username="${pi.user}" password="${pi.password}" trust="true"
+											failonerror="false" verbose="true"
+											command="java -jar ${pi.deployDirectory}/${project.build.finalName}-jar-with-dependencies.jar" />
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>org.apache.ant</groupId>
+								<artifactId>ant-jsch</artifactId>
+								<version>1.9.6</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
