@@ -166,34 +166,24 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.8</version>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.6.0</version>
 						<executions>
 							<execution>
-								<id>package-antrun</id>
 								<phase>package</phase>
 								<goals>
-									<goal>run</goal>
+									<goal>java</goal>
 								</goals>
 								<configuration>
-									<target>
-										<exec executable="java">
-											<arg value="-jar" />
-											<arg
-												value="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar" />
-										</exec>
-									</target>
+									<mainClass>org.waal70.canbus.VolvoCANBUS</mainClass>
+									<arguments>
+										<argument>myArg1</argument>
+										<argument>myArg2</argument>
+									</arguments>
 								</configuration>
 							</execution>
 						</executions>
-						<dependencies>
-							<dependency>
-								<groupId>org.apache.ant</groupId>
-								<artifactId>ant-jsch</artifactId>
-								<version>1.9.6</version>
-							</dependency>
-						</dependencies>
 					</plugin>
 				</plugins>
 			</build>
