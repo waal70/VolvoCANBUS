@@ -1,14 +1,19 @@
 /**
  * 
  */
-package org.waal70.canbus;
+package org.waal70.canbus.features.produce;
 
 import org.apache.log4j.Logger;
+import org.waal70.canbus.features.queue.CanBus;
+import org.waal70.canbus.features.queue.CanBusFactory;
 
 /**
  * @author awaal This is the Workerthread for the reading the canbus Based on
  *         the required type, it will instantiate a concrete CanBus, connect to
  *         it, and make the concrete CanBus listen.
+ *         In fact, even through it is called a Reader (because it reads the
+ *         physical CanBus), for the scope of this JAVA program, it is considered
+ *         a Producer
  */
 
 public class S60CanBusReader extends Thread {

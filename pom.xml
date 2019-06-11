@@ -53,7 +53,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>org.waal70.canbus.VolvoCANBUS</mainClass>
+							<mainClass>org.waal70.canbus.application.VolvoCANBUS</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -176,7 +176,7 @@
 									<goal>java</goal>
 								</goals>
 								<configuration>
-									<mainClass>org.waal70.canbus.VolvoCANBUS</mainClass>
+									<mainClass>org.waal70.canbus.application.VolvoCANBUS</mainClass>
 									<arguments>
 										<argument>myArg1</argument>
 										<argument>myArg2</argument>

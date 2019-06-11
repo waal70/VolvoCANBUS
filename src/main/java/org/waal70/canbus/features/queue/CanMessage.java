@@ -1,9 +1,10 @@
 /**
  * 
  */
-package org.waal70.canbus;
+package org.waal70.canbus.features.queue;
 
 import org.apache.log4j.Logger;
+import org.waal70.canbus.CanSocket;
 import org.waal70.canbus.CanSocket.CanFrame;
 import org.waal70.canbus.CanSocket.CanId;
 

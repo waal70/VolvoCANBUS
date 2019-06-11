@@ -1,9 +1,12 @@
 /**
  * 
  */
-package org.waal70.canbus;
+package org.waal70.canbus.features.queue;
 
 import org.apache.log4j.Logger;
+import org.waal70.canbus.application.VolvoCANBUS;
+import org.waal70.canbus.features.produce.S60FileBasedCanBus;
+import org.waal70.canbus.features.produce.S60IFBasedCanBus;
 
 /**
  * @author awaal Factory class to hide the underlying CanBUS implementation If

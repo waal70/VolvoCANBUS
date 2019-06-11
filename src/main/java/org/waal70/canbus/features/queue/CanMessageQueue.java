@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.waal70.canbus;
+package org.waal70.canbus.features.queue;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class S60CanBusTest {
 
 	/**
-	 * Test method for {@link org.waal70.canbus.S60IFBasedCanBus#connect()}.
+	 * Test method for {@link org.waal70.canbus.features.produce.S60IFBasedCanBus#connect()}.
 	 */
 	@org.junit.jupiter.api.Test
 	void testConnect() {

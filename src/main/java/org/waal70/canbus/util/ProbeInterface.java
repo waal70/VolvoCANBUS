@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.waal70.canbus.util.net;
+package org.waal70.canbus.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -88,6 +88,8 @@ public class ProbeInterface {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		if (nets != null)
+		{
 		for (NetworkInterface netint : Collections.list(nets))
 			try {
 				displayInterfaceInformation(netint);
@@ -95,7 +97,7 @@ public class ProbeInterface {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+		}
 	}
 
 	static void displayInterfaceInformation(NetworkInterface netint) throws SocketException {

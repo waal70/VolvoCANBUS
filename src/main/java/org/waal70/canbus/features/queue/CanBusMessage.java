@@ -1,8 +1,9 @@
 /**
  * 
  */
-package org.waal70.canbus;
+package org.waal70.canbus.features.queue;
 
+import org.waal70.canbus.CanSocket;
 import org.waal70.canbus.CanSocket.CanId;
 
 /**

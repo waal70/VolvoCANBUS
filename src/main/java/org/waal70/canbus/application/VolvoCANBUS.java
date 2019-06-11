@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.waal70.canbus;
+package org.waal70.canbus.application;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,11 +14,15 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.waal70.canbus.CanSocket;
 import org.waal70.canbus.CanSocket.CanFrame;
 import org.waal70.canbus.CanSocket.CanId;
 import org.waal70.canbus.CanSocket.CanInterface;
 import org.waal70.canbus.CanSocket.Mode;
-import org.waal70.canbus.util.net.ProbeInterface;
+import org.waal70.canbus.features.consume.CanMessageQueueConsumer;
+import org.waal70.canbus.features.produce.S60CanBusReader;
+import org.waal70.canbus.features.queue.CanMessageQueue;
+import org.waal70.canbus.util.ProbeInterface;
 
 /**
  * @author awaal
@@ -87,7 +91,6 @@ public class VolvoCANBUS {
 		//First, instantiate the consumers:
 		threadPool.execute(new CanMessageQueueConsumer("Consumer 1"));
 		threadPool.execute(new CanMessageQueueConsumer("Consumer 2"));
-		
 		//Then, the producer
 		Future<?> producerStatus = threadPool.submit(new S60CanBusReader("Producer one"));
 		// Now, kith

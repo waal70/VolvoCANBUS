@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.waal70.canbus;
+package org.waal70.canbus.features.produce;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +15,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.log4j.Logger;
+import org.waal70.canbus.CanSocket;
 import org.waal70.canbus.CanSocket.CanFilter;
+import org.waal70.canbus.application.VolvoCANBUS;
+import org.waal70.canbus.features.queue.CanBus;
+import org.waal70.canbus.features.queue.CanMessage;
+import org.waal70.canbus.features.queue.CanMessageQueue;
 
 /**
  * @author awaal
