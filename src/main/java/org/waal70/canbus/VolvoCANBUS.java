@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
@@ -20,6 +23,8 @@ import org.waal70.canbus.util.net.ProbeInterface;
 /**
  * @author awaal
  * This is the main class
+ * Class is also the broker, managing the creation of a queue,
+ * The producers, and the consumers
  */
 public class VolvoCANBUS {
 	private static Logger log = Logger.getLogger(VolvoCANBUS.class);
@@ -36,7 +41,7 @@ public class VolvoCANBUS {
 		log.info("Program start.");
 		//This will test the canbus:
 		//String one = args[0];
-		doCanbus();
+		doCanbusAlt();
 		//this will test the utilities
 		//testUtil();
 
@@ -58,6 +63,7 @@ public class VolvoCANBUS {
 	private static void doCanbus() throws Exception
 	{
 		
+		
 		S60CanBusReader scbr = new S60CanBusReader("Single Reader");
 		scbr.start();
 		if (VolvoCANBUS.prop.getProperty("VolvoCANBUS.CanBusType").equalsIgnoreCase("IFBASED"))
@@ -72,6 +78,21 @@ public class VolvoCANBUS {
 		 scbr.join(5000);
 		 
 		log.info("Number of messages in queue: " + CanMessageQueue.getInstance().size());
+		
+	}
+	
+	private static void doCanbusAlt() throws Exception
+	{
+		ExecutorService threadPool = Executors.newFixedThreadPool(3);
+		//First, instantiate the consumers:
+		threadPool.execute(new CanMessageQueueConsumer("Consumer 1"));
+		threadPool.execute(new CanMessageQueueConsumer("Consumer 2"));
+		
+		//Then, the producer
+		Future producerStatus = threadPool.submit(new S60CanBusReader("Producer one"));
+		// Now, kith
+		producerStatus.get();
+		threadPool.shutdown();
 		
 	}
 

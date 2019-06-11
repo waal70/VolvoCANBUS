@@ -107,6 +107,7 @@ public class S60FileBasedCanBus implements CanBus {
 			e.printStackTrace();
 		}
 		es.shutdownNow();
+		this.setInactive();
 		return;
 
 	}
@@ -148,5 +149,12 @@ public class S60FileBasedCanBus implements CanBus {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setInactive() {
+		this._cmq.setInactive();
+		
+	}
+
 
 }

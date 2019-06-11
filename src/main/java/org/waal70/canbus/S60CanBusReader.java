@@ -9,8 +9,8 @@ import org.apache.log4j.Logger;
  * @author awaal This is the Workerthread for the reading the canbus Based on
  *         the required type, it will instantiate a concrete CanBus, connect to
  *         it, and make the concrete CanBus listen.
- *
  */
+
 public class S60CanBusReader extends Thread {
 	private CanBus _scb;
 	private String _threadName;

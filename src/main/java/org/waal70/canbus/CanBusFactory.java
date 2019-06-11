@@ -6,21 +6,21 @@ package org.waal70.canbus;
 import org.apache.log4j.Logger;
 
 /**
- * @author awaal
+ * @author awaal Factory class to hide the underlying CanBUS implementation If
+ *         on Mac OSX; it defaults to the file-based CanBus On any other system,
+ *         it will take the CanBus as specified in the properties file
  * 
  */
 public class CanBusFactory {
 
 	/**
-	 * Factory class to hide the underlying CanBUS implementation If on Mac OSX; it
-	 * defaults to the file-based CanBus On any other system, it will take the
-	 * CanBus as specified in the properties file
+	 * 
 	 */
 
 	private static Logger log = Logger.getLogger(CanBusFactory.class);
 
 	public CanBusFactory() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public static CanBus getCanBus() {

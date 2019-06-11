@@ -19,6 +19,7 @@ public interface CanBus {
 		LIFO,
 		RANDOM
 	}
+	public void setInactive();
 	public boolean connect();
 	public void close();
 	public void listen();

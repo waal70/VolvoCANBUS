@@ -29,7 +29,8 @@ import org.waal70.canbus.util.net.ProbeInterface;
  *         interface. It uses sockets to connect to the interface and receives
  *         and writes messages using the appropriate methods. Once the received
  *         data is normalized in a CanMessage, it is enqueued onto the
- *         CanMessageQueue
+ *         CanMessageQueue, making this the Producer in the
+ *         Consumer/Producer pattern
  * 
  */
 public class S60IFBasedCanBus implements CanBus {
@@ -116,6 +117,7 @@ public class S60IFBasedCanBus implements CanBus {
 			}
 		} // end while islistening
 		es.shutdownNow();
+		this.setInactive();
 	}
 
 	public void setLogisticsType(LogisticsType logisticsType) {
@@ -252,6 +254,12 @@ public class S60IFBasedCanBus implements CanBus {
 		}
 		return true;
 		
+	}
+
+	@Override
+	public void setInactive() {
+		this._cmq.setInactive();
+	
 	}
 
 }
