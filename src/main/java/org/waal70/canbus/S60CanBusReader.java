@@ -22,21 +22,7 @@ public class S60CanBusReader extends Thread {
 	public S60CanBusReader(String threadName) {
 		log.debug("CanbusReaderThread started, its name is " + threadName);
 		_threadName = threadName;
-		String os = System.getProperty("os.name").toLowerCase();
-		if (os.contains("mac")) {
-			// Operating system is Apple OSX based
-			VolvoCANBUS.prop.put("VolvoCANBUS.CanBusType", "FILEBASED");
-			VolvoCANBUS.prop.put("VolvoCANBUS.SendProcess" , VolvoCANBUS.prop.getProperty("VolvoCANBUS.SendProcessMAC"));
-			log.info("Detected Apple OSX. Going to override your choice for CanBusType.");
-		} //else if (os.contains("nix") || os.contains("aix") || os.contains("nux")) {
-		//	_override = false;
-		//}
-		log.info("Creating a reader based on the set type: " + VolvoCANBUS.prop.getProperty("VolvoCANBUS.CanBusType"));
-
-			if (VolvoCANBUS.prop.getProperty("VolvoCANBUS.CanBusType").equalsIgnoreCase("FILEBASED"))
-				_scb = new S60FileBasedCanBus(CanMessageQueue.getInstance());
-			else
-				_scb = new S60IFBasedCanBus(CanMessageQueue.getInstance());
+		_scb = CanBusFactory.getCanBus();
 	}
 
 	/*
