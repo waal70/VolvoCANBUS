@@ -107,7 +107,6 @@ public class S60FileBasedCanBus implements CanBus {
 			e.printStackTrace();
 		}
 		es.shutdownNow();
-		this.setInactive();
 		return;
 
 	}

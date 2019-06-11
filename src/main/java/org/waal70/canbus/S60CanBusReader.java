@@ -37,6 +37,7 @@ public class S60CanBusReader extends Thread {
 		_scb.listen();
 		// if we are returning from the listen-function, it means
 		// that we need to stop running!
+		_scb.setInactive();
 		this.interrupt();
 		log.debug("end of run()");
 	}

@@ -94,11 +94,11 @@ public class CanMessageQueueConsumer extends Thread {
 			CanMessage cm = _cmq.get();
 			while (_cmq.isActive()) {
 				if (cm != null)
-					log.debug("Consumer " + this.name + " got: " + cm.getCanMessage());
+					log.info("Consumer " + this.name + " got: " + cm.getCanMessage());
 				Thread.sleep(100);
 				cm = _cmq.get();
 				if (cm != null)
-					log.debug("Consumer " + this.name + " got: " + cm.getCanMessage());
+					log.info("Consumer " + this.name + " got: " + cm.getCanMessage());
 
 			}
 			log.debug("Finished processing. " + this.name + " terminating.");

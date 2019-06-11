@@ -117,7 +117,6 @@ public class S60IFBasedCanBus implements CanBus {
 			}
 		} // end while islistening
 		es.shutdownNow();
-		this.setInactive();
 	}
 
 	public void setLogisticsType(LogisticsType logisticsType) {

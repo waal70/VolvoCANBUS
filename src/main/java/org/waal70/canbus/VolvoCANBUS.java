@@ -89,7 +89,7 @@ public class VolvoCANBUS {
 		threadPool.execute(new CanMessageQueueConsumer("Consumer 2"));
 		
 		//Then, the producer
-		Future producerStatus = threadPool.submit(new S60CanBusReader("Producer one"));
+		Future<?> producerStatus = threadPool.submit(new S60CanBusReader("Producer one"));
 		// Now, kith
 		producerStatus.get();
 		threadPool.shutdown();
