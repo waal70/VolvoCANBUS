@@ -85,8 +85,8 @@ public class ProbeInterface {
 		try {
 			nets = NetworkInterface.getNetworkInterfaces();
 		} catch (SocketException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			
+			log.error(e1.getLocalizedMessage());
 		}
 		if (nets != null)
 		{
@@ -94,8 +94,7 @@ public class ProbeInterface {
 			try {
 				displayInterfaceInformation(netint);
 			} catch (SocketException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e.getLocalizedMessage());
 			}
 		}
 	}

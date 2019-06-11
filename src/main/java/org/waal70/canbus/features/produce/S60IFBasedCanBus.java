@@ -125,7 +125,7 @@ public class S60IFBasedCanBus implements CanBus {
 	}
 
 	public void setLogisticsType(LogisticsType logisticsType) {
-		// TODO Auto-generated method stub
+		log.info(Thread.currentThread().getStackTrace()[1].getMethodName() + "() not implemented for interface-based Canbus");
 
 	}
 	/* (non-Javadoc)

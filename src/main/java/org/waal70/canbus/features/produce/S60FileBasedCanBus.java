@@ -114,21 +114,14 @@ class S60FileBasedCanBus implements CanBus {
 		return;
 
 	}
-	/* (non-Javadoc)
-	 * @see org.waal70.canbus.CanBus#setLogisticsType(org.waal70.canbus.CanBus.LogisticsType)
-	 */
-	@Override
-	public void setLogisticsType(LogisticsType logisticsType) {
-		// TODO Auto-generated method stub
 
-	}
 
 	/* (non-Javadoc)
 	 * @see org.waal70.canbus.CanBus#getListenFilter()
 	 */
 	@Override
 	public CanFilter[] getListenFilter() {
-		// TODO Auto-generated method stub
+		log.info(Thread.currentThread().getStackTrace()[1].getMethodName() + "() not implemented for Filebased Canbus");
 		return null;
 	}
 
@@ -137,25 +130,31 @@ class S60FileBasedCanBus implements CanBus {
 	 */
 	@Override
 	public void clearListenFilter() {
-		// TODO Auto-generated method stub
+		log.info(Thread.currentThread().getStackTrace()[1].getMethodName() + "() not implemented for Filebased Canbus");
 
 	}
 
 	@Override
 	public void setListenFilter(CanFilter setFilter) {
-		// TODO Auto-generated method stub
+		log.info(Thread.currentThread().getStackTrace()[1].getMethodName() + "() not implemented for Filebased Canbus");
 		
 	}
 
 	@Override
 	public void addListenFilter(CanFilter addFilter) {
-		// TODO Auto-generated method stub
+		log.info(Thread.currentThread().getStackTrace()[1].getMethodName() + "() not implemented for Filebased Canbus");
 		
 	}
 
 	@Override
 	public void setInactive() {
 		this._cmq.setInactive();
+		
+	}
+
+	@Override
+	public void setLogisticsType(LogisticsType logisticsType) {
+		log.info(Thread.currentThread().getStackTrace()[1].getMethodName() + "() not implemented for Filebased Canbus");
 		
 	}
 

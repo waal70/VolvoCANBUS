@@ -10,8 +10,6 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.waal70.canbus.CanSocket;
@@ -21,7 +19,6 @@ import org.waal70.canbus.CanSocket.CanInterface;
 import org.waal70.canbus.CanSocket.Mode;
 import org.waal70.canbus.features.consume.CanMessageQueueConsumer;
 import org.waal70.canbus.features.produce.S60CanBusReader;
-import org.waal70.canbus.features.queue.CanMessageQueue;
 import org.waal70.canbus.util.ProbeInterface;
 
 /**
@@ -64,7 +61,7 @@ public class VolvoCANBUS {
 	
 	
 
-	private static void doCanbus() throws Exception
+/*	private static void doCanbus() throws Exception
 	{
 		
 		
@@ -83,7 +80,7 @@ public class VolvoCANBUS {
 		 
 		log.info("Number of messages in queue: " + CanMessageQueue.getInstance().size());
 		
-	}
+	}*/
 	
 	private static void doCanbusAlt() throws Exception
 	{
@@ -99,6 +96,7 @@ public class VolvoCANBUS {
 		
 	}
 
+	@SuppressWarnings("unused")
 	private static void canBusWrite()
 	{
 		try (final CanSocket socket = new CanSocket(Mode.RAW)) {

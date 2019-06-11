@@ -9,6 +9,10 @@ import org.waal70.canbus.features.queue.CanMessageQueue;
 
 /**
  * @author awaal
+ * The QueueConsumer is a threaded implementation of the queue
+ * reader. It takes the CanMessageQueue and keeps on reading from
+ * it untill the queue is empty and no further messages are to be
+ * expected
  *
  */
 public class CanMessageQueueConsumer extends Thread {
@@ -19,75 +23,13 @@ public class CanMessageQueueConsumer extends Thread {
 	private int msgCounter = 0;
 
 	/**
-	 * 
-	 */
-	public CanMessageQueueConsumer() {
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param target
-	 */
-	public CanMessageQueueConsumer(Runnable target) {
-		super(target);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @param name
+	 * Sets the name for this consumer
 	 */
 	public CanMessageQueueConsumer(String name) {
 		super(name);
 		this.name = name;
 		this._cmq = CanMessageQueue.getInstance();
-	}
-
-	/**
-	 * @param group
-	 * @param target
-	 */
-	public CanMessageQueueConsumer(ThreadGroup group, Runnable target) {
-		super(group, target);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param group
-	 * @param name
-	 */
-	public CanMessageQueueConsumer(ThreadGroup group, String name) {
-		super(group, name);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param target
-	 * @param name
-	 */
-	public CanMessageQueueConsumer(Runnable target, String name) {
-		super(target, name);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param group
-	 * @param target
-	 * @param name
-	 */
-	public CanMessageQueueConsumer(ThreadGroup group, Runnable target, String name) {
-		super(group, target, name);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param group
-	 * @param target
-	 * @param name
-	 * @param stackSize
-	 */
-	public CanMessageQueueConsumer(ThreadGroup group, Runnable target, String name, long stackSize) {
-		super(group, target, name, stackSize);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

@@ -3,7 +3,6 @@
  */
 package org.waal70.canbus.features.queue;
 
-import org.waal70.canbus.CanSocket;
 import org.waal70.canbus.CanSocket.CanFilter;
 
 /**
@@ -11,7 +10,7 @@ import org.waal70.canbus.CanSocket.CanFilter;
  *
  */
 public interface CanBus {
-	//should implement "connect" or "open"
+	// should implement "connect" or "open"
 	// send (message)
 	// listenFilter (to a can-id)
 	// listen (creating an array of received messages, maxing out at 255?)
