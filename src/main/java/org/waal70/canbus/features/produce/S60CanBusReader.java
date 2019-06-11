@@ -5,7 +5,6 @@ package org.waal70.canbus.features.produce;
 
 import org.apache.log4j.Logger;
 import org.waal70.canbus.features.queue.CanBus;
-import org.waal70.canbus.features.queue.CanBusFactory;
 
 /**
  * @author awaal This is the Workerthread for the reading the canbus Based on

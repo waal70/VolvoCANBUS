@@ -1,20 +1,21 @@
 /**
  * 
  */
-package org.waal70.canbus.features.queue;
+package org.waal70.canbus.features.produce;
 
 import org.apache.log4j.Logger;
 import org.waal70.canbus.application.VolvoCANBUS;
-import org.waal70.canbus.features.produce.S60FileBasedCanBus;
-import org.waal70.canbus.features.produce.S60IFBasedCanBus;
+import org.waal70.canbus.features.queue.CanBus;
+import org.waal70.canbus.features.queue.CanMessageQueue;
 
 /**
  * @author awaal Factory class to hide the underlying CanBUS implementation If
- *         on Mac OSX; it defaults to the file-based CanBus On any other system,
+ *         on Mac OSX; it defaults to the file-based CanBus 
+ *         On any other system,
  *         it will take the CanBus as specified in the properties file
  * 
  */
-public class CanBusFactory {
+class CanBusFactory {
 
 	/**
 	 * 
@@ -22,11 +23,11 @@ public class CanBusFactory {
 
 	private static Logger log = Logger.getLogger(CanBusFactory.class);
 
-	public CanBusFactory() {
+	CanBusFactory() {
 		
 	}
 
-	public static CanBus getCanBus() {
+	static CanBus getCanBus() {
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("mac")) {
 			// Operating system is Apple OSX based
