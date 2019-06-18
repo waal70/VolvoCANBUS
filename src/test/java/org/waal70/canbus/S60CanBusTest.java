@@ -5,6 +5,8 @@ package org.waal70.canbus;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * @author awaal
  *
@@ -14,7 +16,7 @@ class S60CanBusTest {
 	/**
 	 * Test method for {@link org.waal70.canbus.features.produce.S60IFBasedCanBus#connect()}.
 	 */
-	@org.junit.jupiter.api.Test
+	@Test
 	void testConnect() {
 		//S60CanBus scb = new S60CanBus(new CanMessageQueue());
 		//scb.setQueueLength(255);

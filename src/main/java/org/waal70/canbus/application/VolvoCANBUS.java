@@ -17,8 +17,11 @@ import org.waal70.canbus.CanSocket.CanFrame;
 import org.waal70.canbus.CanSocket.CanId;
 import org.waal70.canbus.CanSocket.CanInterface;
 import org.waal70.canbus.CanSocket.Mode;
+import org.waal70.canbus.application.process.VolvoCANBUSProcess;
+import org.waal70.canbus.application.ui.VolvoCANBUSFXML;
 import org.waal70.canbus.features.consume.CanMessageQueueConsumer;
 import org.waal70.canbus.features.produce.S60CanBusReader;
+import org.waal70.canbus.util.OSCapability;
 import org.waal70.canbus.util.ProbeInterface;
 
 /**
@@ -40,9 +43,15 @@ public class VolvoCANBUS {
 		initLog4J();
 		initProperties();
 		log.info("Program start.");
+		if (OSCapability.isGUI())
+			VolvoCANBUSFXML.main(args);
+		else
+			VolvoCANBUSProcess.doCanbusAlt();
+		
+		
 		//This will test the canbus:
 		//String one = args[0];
-		doCanbusAlt();
+		//doCanbusAlt();
 		//this will test the utilities
 		//testUtil();
 
@@ -82,19 +91,7 @@ public class VolvoCANBUS {
 		
 	}*/
 	
-	private static void doCanbusAlt() throws Exception
-	{
-		ExecutorService threadPool = Executors.newFixedThreadPool(3);
-		//First, instantiate the consumers:
-		threadPool.execute(new CanMessageQueueConsumer("Consumer 1"));
-		threadPool.execute(new CanMessageQueueConsumer("Consumer 2"));
-		//Then, the producer
-		Future<?> producerStatus = threadPool.submit(new S60CanBusReader("Producer one"));
-		// Now, kith
-		producerStatus.get();
-		threadPool.shutdown();
-		
-	}
+
 
 	@SuppressWarnings("unused")
 	private static void canBusWrite()
