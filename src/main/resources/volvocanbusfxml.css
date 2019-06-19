@@ -53,7 +53,12 @@
 
 #content {
 	-fx-wrap-text: true;
-	-fx-font-size: 16px;
+	-fx-font-size: 12px;
+}
+
+// The text area defines the code block
+.text-area {
+	-fx-font-family: Courier New;
 }
 
 #footer-section {

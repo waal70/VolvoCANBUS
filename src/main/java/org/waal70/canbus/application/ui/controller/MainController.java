@@ -10,14 +10,11 @@ import org.apache.log4j.Logger;
 import org.waal70.canbus.application.process.VolvoCANBUSProcess;
 import org.waal70.canbus.util.TextAreaAppender;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.Pane;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 /**
@@ -32,35 +29,39 @@ public class MainController implements Initializable{
 	 */
 
 	@FXML
-	private MenuItem mnuQuit;
-
-	@FXML
-	private MenuBar mainScreen;
-	@FXML
-	private Pane mainPane;
-	@FXML
     public TextArea txtMain;
 	
 	@FXML
-    private Button btnOK;
+    private Label btnOK;
+	
+	@FXML
+    private Label lblCount;
 
 	
 	
 
 	@FXML
-	void buttonQuit(ActionEvent event) {
+	void buttonQuit(MouseEvent event) {
 		log.info("Quit clicked" + event.toString());
 
-		Stage stage = (Stage) mainScreen.getScene().getWindow();
+		Stage stage = (Stage) txtMain.getScene().getWindow();
 		// do what you have to do
 		stage.close();
 
 	}
 	
+	public void updateCount(String text) {
+		this.lblCount.setText(text);
+		
+	}
+	
 	@FXML
-    void btnGoClicked(ActionEvent event) {
+    void btnGoClicked(MouseEvent event) {
 		try {
 			VolvoCANBUSProcess.doCanbusAlt();
+			//Window owner = btnOK.getScene().getWindow();
+			//AlertHelper.showAlert(AlertType.INFORMATION, owner, "Confirm", "You clicked GO");
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -74,4 +75,5 @@ public class MainController implements Initializable{
 		TextAreaAppender.setTextArea(txtMain);
 		
 	}
+	
 }
