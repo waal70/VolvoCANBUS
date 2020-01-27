@@ -7,11 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.waal70.canbus.CanSocket;
 import org.waal70.canbus.CanSocket.CanFrame;
 import org.waal70.canbus.CanSocket.CanId;
@@ -19,10 +14,11 @@ import org.waal70.canbus.CanSocket.CanInterface;
 import org.waal70.canbus.CanSocket.Mode;
 import org.waal70.canbus.application.process.VolvoCANBUSProcess;
 import org.waal70.canbus.application.ui.VolvoCANBUSFXML;
-import org.waal70.canbus.features.consume.CanMessageQueueConsumer;
-import org.waal70.canbus.features.produce.S60CanBusReader;
 import org.waal70.canbus.util.OSCapability;
 import org.waal70.canbus.util.ProbeInterface;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author awaal
@@ -31,7 +27,7 @@ import org.waal70.canbus.util.ProbeInterface;
  * The producers, and the consumers
  */
 public class VolvoCANBUS {
-	private static Logger log = Logger.getLogger(VolvoCANBUS.class);
+	private static Logger log = LogManager.getLogger(VolvoCANBUS.class);
 	public static Properties prop = new Properties();
 	
 
@@ -40,7 +36,7 @@ public class VolvoCANBUS {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		initLog4J();
+		//initLog4J();
 		initProperties();
 		log.info("Program start.");
 		if (OSCapability.isGUI())
@@ -121,12 +117,6 @@ public class VolvoCANBUS {
 			prop.put("VolvoCANBUS.CanBusType", "IFBASED");
 			prop.put("VolvoCANBUS.SendProcess", "/home/awaal/cansend");
 		}
-	}
-	
-	private static void initLog4J()
-	{
-		InputStream is = VolvoCANBUS.class.getResourceAsStream("/log4j.properties");
-		PropertyConfigurator.configure(is);
 	}
 
 }

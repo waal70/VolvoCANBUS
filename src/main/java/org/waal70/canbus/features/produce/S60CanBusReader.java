@@ -3,7 +3,8 @@
  */
 package org.waal70.canbus.features.produce;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.waal70.canbus.features.queue.CanBus;
 
 /**
@@ -18,7 +19,7 @@ import org.waal70.canbus.features.queue.CanBus;
 public class S60CanBusReader extends Thread {
 	private CanBus _scb;
 	private String _threadName;
-	private static Logger log = Logger.getLogger(S60CanBusReader.class);
+	private static Logger log = LogManager.getLogger(S60CanBusReader.class);
 
 	/**
 	 * 

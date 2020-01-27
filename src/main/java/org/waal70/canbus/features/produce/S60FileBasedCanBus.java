@@ -14,7 +14,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.waal70.canbus.CanSocket.CanFilter;
 import org.waal70.canbus.application.VolvoCANBUS;
 import org.waal70.canbus.features.queue.CanBus;
@@ -26,7 +27,7 @@ import org.waal70.canbus.features.queue.CanMessageQueue;
  *
  */
 class S60FileBasedCanBus implements CanBus {
-	private static Logger log = Logger.getLogger(S60FileBasedCanBus.class);
+	private static Logger log = LogManager.getLogger(S60FileBasedCanBus.class);
 	private ProcessBuilder _pb = new ProcessBuilder(VolvoCANBUS.prop.getProperty("VolvoCANBUS.SendProcess"));
 	private Process _p;
 	private BufferedReader _br;

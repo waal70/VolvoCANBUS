@@ -4,20 +4,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.waal70.canbus.application.VolvoCANBUS;
 
 class initTest {
 	public static Properties prop = new Properties();
-	private static Logger log = Logger.getLogger(initTest.class);
+	private static Logger log = LogManager.getLogger(initTest.class);
 
 	@BeforeAll
 	static void testInit() {
 		initProperties();
-		initLog4J();
+		//initLog4J();
 		//fail("hahah");
 	}
 	
@@ -37,12 +37,6 @@ class initTest {
 			prop.put("VolvoCANBUS.CanBusType", "IFBASED");
 			prop.put("VolvoCANBUS.SendProcess", "/home/awaal/cansend");
 		}
-	}
-	
-	private static void initLog4J()
-	{
-		InputStream is = VolvoCANBUS.class.getResourceAsStream("/log4j.properties");
-		PropertyConfigurator.configure(is);
 	}
 
 }

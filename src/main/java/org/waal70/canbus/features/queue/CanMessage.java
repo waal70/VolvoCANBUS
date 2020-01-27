@@ -3,7 +3,8 @@
  */
 package org.waal70.canbus.features.queue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.waal70.canbus.CanSocket;
 import org.waal70.canbus.CanSocket.CanFrame;
 import org.waal70.canbus.CanSocket.CanId;
@@ -13,7 +14,7 @@ import org.waal70.canbus.CanSocket.CanId;
  *
  */
 public class CanMessage extends CanBusMessage {
-	private static Logger log = Logger.getLogger(CanMessage.class);
+	private static Logger log = LogManager.getLogger(CanMessage.class);
 	private static final int MSG_LENGTH = 16;
 	@SuppressWarnings("unused")
 	private String _interfaceName;

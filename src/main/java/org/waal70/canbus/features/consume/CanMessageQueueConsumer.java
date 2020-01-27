@@ -3,7 +3,9 @@
  */
 package org.waal70.canbus.features.consume;
 
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.waal70.canbus.features.queue.CanMessage;
 import org.waal70.canbus.features.queue.CanMessageQueue;
 
@@ -18,7 +20,7 @@ import org.waal70.canbus.features.queue.CanMessageQueue;
 public class CanMessageQueueConsumer extends Thread {
 
 	private String name;
-	private static Logger log = Logger.getLogger(CanMessageQueueConsumer.class);
+	private static Logger log = LogManager.getLogger(CanMessageQueueConsumer.class);
 	private CanMessageQueue _cmq;
 	private int msgCounter = 0;
 

@@ -16,7 +16,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.waal70.canbus.CanSocket;
 import org.waal70.canbus.CanSocket.CanFilter;
 import org.waal70.canbus.CanSocket.CanFrame;
@@ -42,7 +43,7 @@ public class S60IFBasedCanBus implements CanBus {
 	/**
 	 * @param _cmq
 	 */
-	private static Logger log = Logger.getLogger(S60IFBasedCanBus.class);
+	private static Logger log = LogManager.getLogger(S60IFBasedCanBus.class);
 	private static final String CAN_INTERFACE = VolvoCANBUS.prop.getProperty("VolvoCANBUS.ifname","can0");
 	private boolean _ISLISTENING = false;
 	private CanSocket mySocket = new CanSocket(Mode.RAW);

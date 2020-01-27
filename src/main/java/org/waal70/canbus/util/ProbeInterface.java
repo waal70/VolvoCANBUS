@@ -16,14 +16,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  * @author awaal
  *
  */
 public class ProbeInterface {
-	private static Logger log = Logger.getLogger(ProbeInterface.class);
+	private static Logger log = LogManager.getLogger(ProbeInterface.class);
 
 	// from http://lxr.linux.no/linux+v3.0/include/linux/if_arp.h#L30:
 	private static final int ARPHRD_CAN = 280;

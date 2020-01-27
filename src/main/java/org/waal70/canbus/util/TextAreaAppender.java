@@ -1,59 +1,102 @@
 package org.waal70.canbus.util;
 
-import javafx.application.Platform;
-import javafx.scene.control.TextArea;
-import org.apache.log4j.WriterAppender;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
-/**
- *
- * @author Russell Shingleton <shingler@oclc.org>
- */
-public class TextAreaAppender extends WriterAppender {
+import javax.swing.*;
+import java.util.ArrayList;
 
-    private static volatile TextArea textArea = null;
+import static javax.swing.SwingUtilities.invokeLater;
+import static org.apache.logging.log4j.core.config.Property.EMPTY_ARRAY;
+import static org.apache.logging.log4j.core.layout.PatternLayout.createDefaultLayout;
 
-    /**
-     * Set the target TextArea for the logging information to appear.
-     *
-     * @param textArea
-     */
-    public static void setTextArea(final TextArea textArea) {
-        TextAreaAppender.textArea = textArea;
+@Plugin(name = "JTextAreaAppender", category = "Core", elementType = "appender", printObject = true)
+
+public class TextAreaAppender extends AbstractAppender
+{
+    private static volatile ArrayList<JTextArea> textAreas = new ArrayList<>();
+
+    private int maxLines;
+
+    private TextAreaAppender(String name, Layout<?> layout, Filter filter, int maxLines, boolean ignoreExceptions)
+    {
+        super(name, filter, layout, ignoreExceptions, EMPTY_ARRAY);
+        this.maxLines = maxLines;
     }
 
-    /**
-     * Format and then append the loggingEvent to the stored TextArea.
-     *
-     * @param loggingEvent
-     */
+    @SuppressWarnings("unused")
+    @PluginFactory
+    public static TextAreaAppender createAppender(@PluginAttribute("name") String name,
+                                                   @PluginAttribute("maxLines") int maxLines,
+                                                   @PluginAttribute("ignoreExceptions") boolean ignoreExceptions,
+                                                   @PluginElement("Layout") Layout<?> layout,
+                                                   @PluginElement("Filters") Filter filter)
+    {
+        if (name == null)
+        {
+            LOGGER.error("No name provided for JTextAreaAppender");
+            return null;
+        }
+
+        if (layout == null)
+        {
+            layout = createDefaultLayout();
+        }
+        return new TextAreaAppender(name, layout, filter, maxLines, ignoreExceptions);
+    }
+
+    // Add the target JTextArea to be populated and updated by the logging information.
+    public static void addLog4j2TextAreaAppender(final JTextArea textArea)
+    {
+        TextAreaAppender.textAreas.add(textArea);
+    }
+
     @Override
-    public void append(final LoggingEvent loggingEvent) {
-        final String message = this.layout.format(loggingEvent);
+    public void append(LogEvent event)
+    {
+        String message = new String(this.getLayout().toByteArray(event));
 
         // Append formatted message to text area using the Thread.
-        try {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (textArea != null) {
-                            if (textArea.getText().length() == 0) {
+        try
+        {
+            invokeLater(() ->
+            {
+                for (JTextArea textArea : textAreas)
+                {
+                    try
+                    {
+                        if (textArea != null)
+                        {
+                            if (textArea.getText().length() == 0)
+                            {
                                 textArea.setText(message);
-                            } else {
-                                textArea.selectEnd();
-                                textArea.insertText(textArea.getText().length(),
-                                        message);
+                            } else
+                            {
+                                textArea.append("\n" + message);
+                                if (maxLines > 0 & textArea.getLineCount() > maxLines + 1)
+                                {
+                                    int endIdx = textArea.getDocument().getText(0, textArea.getDocument().getLength()).indexOf("\n");
+                                    textArea.getDocument().remove(0, endIdx + 1);
+                                }
                             }
+                            String content = textArea.getText();
+                            textArea.setText(content.substring(0, content.length() - 1));
                         }
-                    } catch (final Throwable t) {
-                        System.out.println("Unable to append log to text area: "
-                                + t.getMessage());
+                    } catch (Throwable throwable)
+                    {
+                        throwable.printStackTrace();
                     }
                 }
             });
-        } catch (final IllegalStateException e) {
-            // ignore case when the platform hasn't yet been iniitialized
+        } catch (IllegalStateException exception)
+        {
+            exception.printStackTrace();
         }
     }
 }
