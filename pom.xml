@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.waal70.canbus</groupId>
 	<artifactId>VolvoCANBUS</artifactId>
@@ -12,11 +10,6 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
 			<version>5.4.0-M1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.waal70.canbus</groupId>
-			<artifactId>libsocket-can-java</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
@@ -33,10 +26,15 @@
 			<artifactId>log4j-core</artifactId>
 			<version>2.17.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.waal70.canbus</groupId>
+			<artifactId>libsocket-can-java</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- Create a target.properties file in your project root that contains 
 			the appropriate properties (pi.user, pi.password) -->
@@ -98,7 +96,6 @@
 					<argLine>${argLine}</argLine>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>properties-maven-plugin</artifactId>
@@ -138,24 +135,13 @@
 								<configuration>
 									<target>
 										<!-- ensure the target directory exists on the Raspberry Pi -->
-										<sshexec host="${pi.host}" port="${pi.port}"
-											username="${pi.user}" password="${pi.password}" trust="true"
-											failonerror="false" verbose="true"
-											command="mkdir --parents ${pi.deployDirectory}" />
+										<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}" password="${pi.password}" trust="true" failonerror="false" verbose="true" command="mkdir --parents ${pi.deployDirectory}" />
 
 										<!-- copy the JAR file to the Raspberry Pi -->
-										<scp
-											file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar"
-											todir="${pi.user}:${pi.password}@${pi.host}:${pi.deployDirectory}"
-											port="${pi.port}" trust="true" verbose="true"
-											failonerror="true">
-										</scp>
+										<scp file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar" todir="${pi.user}:${pi.password}@${pi.host}:${pi.deployDirectory}" port="${pi.port}" trust="true" verbose="true" failonerror="true"></scp>
 
 										<!-- run the JAR file on the Raspberry Pi -->
-										<sshexec host="${pi.host}" port="${pi.port}"
-											username="${pi.user}" password="${pi.password}" trust="true"
-											failonerror="false" verbose="true"
-											command="java -jar ${pi.deployDirectory}/${project.build.finalName}-jar-with-dependencies.jar" />
+										<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}" password="${pi.password}" trust="true" failonerror="false" verbose="true" command="java -jar ${pi.deployDirectory}/${project.build.finalName}-jar-with-dependencies.jar" />
 									</target>
 								</configuration>
 							</execution>

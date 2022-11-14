@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
 import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.waal70.canbus.CanSocket;
 import org.waal70.canbus.CanSocket.CanFrame;
 import org.waal70.canbus.CanSocket.CanId;
@@ -16,9 +19,6 @@ import org.waal70.canbus.application.process.VolvoCANBUSProcess;
 import org.waal70.canbus.application.ui.VolvoCANBUSFXML;
 import org.waal70.canbus.util.OSCapability;
 import org.waal70.canbus.util.ProbeInterface;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author awaal
