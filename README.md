@@ -63,6 +63,13 @@ before moving on.
 Verify you have a can0 (or something like that) interface present on your system. This is the main mode of
 communication for the utils mentioned, so it should be up and running.
 
+First run:
+--------------
+Make sure libsocket-can-java.jar is available by building it (preferably on the target pi-hole) (use -Dmaven.skip.test=true if needed)
+Make sure there is a valid target.properties (based off of target.properties.example)
+For deploy to raspberry and decentralized run: run maven package 
+For local run: run maven package in profile "local-run"
+
 CanSocket.java licensing:
 --------------
 
